@@ -1,18 +1,93 @@
+"use client";
+import { useState, useRef } from "react";
+import { checkValidMobileNumber } from "./Utils";
+
 const Login = () => {
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [pageStep, setPageStep] = useState("sing-in");
+
+  const mobileInputRef = useRef<HTMLInputElement>(null);
+
+  const onMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMobileNumber(value);
+    if (value.length === 10) {
+      setErrorMessage("");
+    }
+  };
+
+  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log("onSubmit called");
+    console.log(mobileNumber);
+    if (!checkValidMobileNumber(mobileNumber)) {
+      setErrorMessage("Please enter a valid 10 digit mobile number");
+      mobileInputRef.current?.focus();
+    } else {
+      setPageStep("otp");
+    }
+  };
+
+  const renderMobileInput = () => {
+    return (
+      <input
+        id="mobile"
+        name="mobile"
+        type="number"
+        required
+        autoComplete="mobile"
+        autoFocus={true}
+        value={mobileNumber}
+        onChange={onMobileChange}
+        placeholder="Enter your 10 digit mobile number"
+        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+        ref={mobileInputRef}
+      />
+    );
+  };
+
+  const onOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setOtp(value);
+  };
+
+  const renderOtpInput = () => {
+    return (
+      <input
+        id="otp"
+        name="otp"
+        type="number"
+        required
+        autoComplete="mobile"
+        autoFocus={true}
+        value={otp}
+        onChange={onOtpChange}
+        placeholder="Enter the OTP"
+        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+        ref={mobileInputRef}
+      />
+    );
+  };
+
+  const renderInput = () => {
+    switch (pageStep) {
+      case "sing-in":
+        return renderMobileInput();
+      case "otp":
+        return renderOtpInput();
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
-      {/*
-              This example requires updating your template:
-      
-              ```
-              <html class="h-full bg-white">
-              <body class="h-full">
-              ```
-            */}
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
-            alt="Your Company"
+            alt="Kirana Shop"
             src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
             className="mx-auto h-10 w-auto"
           />
@@ -22,23 +97,20 @@ const Login = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <div className="space-y-6">
             <div>
               <label
                 htmlFor="email"
                 className="block text-sm/6 font-medium text-gray-900"
               >
-                Mobile Number
+                {pageStep === "sing-in"
+                  ? "Mobile Number"
+                  : `Otp sent to ${mobileNumber}`}
               </label>
-              <div className="mt-2">
-                <input
-                  id="mobile"
-                  name="mobile"
-                  type="mobile"
-                  required
-                  autoComplete="mobile"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
+              <div className="mt-2">{renderInput()}</div>
+
+              <div className="mt-2 text-sm text-red-600 min-h-[20px]">
+                {errorMessage}
               </div>
             </div>
 
@@ -73,16 +145,16 @@ const Login = () => {
 
             <div>
               <button
-                type="submit"
+                onClick={onSubmit}
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                GET OTP
+                {pageStep === "sing-in" ? "GET OTP" : "VERIFY OTP"}
               </button>
             </div>
-          </form>
+          </div>
 
           <p className="mt-10 text-center text-sm/6 text-gray-500">
-            Not a member?{" "}
+            Not a members?{" "}
             <a
               href="#"
               className="font-semibold text-indigo-600 hover:text-indigo-500"
