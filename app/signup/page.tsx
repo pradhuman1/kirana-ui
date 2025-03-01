@@ -1,8 +1,9 @@
 "use client";
 import { useState, useRef } from "react";
+import Input from "../components/input";
 import { checkValidMobileNumber } from "../Utils";
 
-const Login = () => {
+const Singup = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -24,7 +25,10 @@ const Login = () => {
     console.log(mobileNumber);
     if (!checkValidMobileNumber(mobileNumber)) {
       setErrorMessage("Please enter a valid 10 digit mobile number");
-      mobileInputRef.current?.focus();
+      const inputElement = mobileInputRef.current;
+      if (inputElement) {
+        inputElement.focus();
+      }
     } else {
       setPageStep("otp");
     }
@@ -32,7 +36,7 @@ const Login = () => {
 
   const renderMobileInput = () => {
     return (
-      <input
+      <Input
         id="mobile"
         name="mobile"
         type="number"
@@ -42,8 +46,7 @@ const Login = () => {
         value={mobileNumber}
         onChange={onMobileChange}
         placeholder="Enter your 10 digit mobile number"
-        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-        ref={mobileInputRef}
+        ref={mobileInputRef as React.RefObject<HTMLInputElement>}
       />
     );
   };
@@ -55,7 +58,7 @@ const Login = () => {
 
   const renderOtpInput = () => {
     return (
-      <input
+      <Input
         id="otp"
         name="otp"
         type="number"
@@ -65,8 +68,7 @@ const Login = () => {
         value={otp}
         onChange={onOtpChange}
         placeholder="Enter the OTP"
-        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-        ref={mobileInputRef}
+        ref={mobileInputRef as React.RefObject<HTMLInputElement>}
       />
     );
   };
@@ -92,7 +94,7 @@ const Login = () => {
             className="mx-auto h-10 w-auto"
           />
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-            Sign in to your shop
+            Create a new account and start selling
           </h2>
         </div>
 
@@ -113,35 +115,6 @@ const Login = () => {
                 {errorMessage}
               </div>
             </div>
-
-            {/* <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Password
-                </label>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
-            </div> */}
 
             <div>
               <button
@@ -168,4 +141,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Singup;
