@@ -2,12 +2,16 @@
 import { useState, useRef } from "react";
 import Input from "../components/input";
 import { checkValidMobileNumber } from "../Utils";
+import NameAndPhone from "./NameAndPhone";
 
 const Singup = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [pageStep, setPageStep] = useState("sing-in");
+  const [pageStep, setPageStep] = useState("nameAndPhone");
+  const [shopName, setShopName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
 
   const mobileInputRef = useRef<HTMLInputElement>(null);
 
@@ -17,6 +21,21 @@ const Singup = () => {
     if (value.length === 10) {
       setErrorMessage("");
     }
+  };
+
+  const onShopNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setShopName(value);
+  };
+
+  const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+  };
+
+  const onAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setAddress(value);
   };
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -34,53 +53,16 @@ const Singup = () => {
     }
   };
 
-  const renderMobileInput = () => {
-    return (
-      <Input
-        id="mobile"
-        name="mobile"
-        type="number"
-        required
-        autoComplete="mobile"
-        autoFocus={true}
-        value={mobileNumber}
-        onChange={onMobileChange}
-        placeholder="Enter your 10 digit mobile number"
-        ref={mobileInputRef as React.RefObject<HTMLInputElement>}
-      />
-    );
+  const renderNameAndPhone = () => {
+    return <NameAndPhone />;
   };
 
-  const onOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setOtp(value);
-  };
-
-  const renderOtpInput = () => {
-    return (
-      <Input
-        id="otp"
-        name="otp"
-        type="number"
-        required
-        autoComplete="mobile"
-        autoFocus={true}
-        value={otp}
-        onChange={onOtpChange}
-        placeholder="Enter the OTP"
-        ref={mobileInputRef as React.RefObject<HTMLInputElement>}
-      />
-    );
-  };
-
-  const renderInput = () => {
+  const renderView = () => {
     switch (pageStep) {
-      case "sing-in":
-        return renderMobileInput();
-      case "otp":
-        return renderOtpInput();
+      case "nameAndPhone":
+        return <>{renderNameAndPhone()}</>;
       default:
-        return null;
+        return <></>;
     }
   };
 
@@ -99,40 +81,38 @@ const Singup = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <div className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {pageStep === "sing-in"
-                  ? "Mobile Number"
-                  : `Otp sent to ${mobileNumber}`}
-              </label>
-              <div className="mt-2">{renderInput()}</div>
+          <div className="space-y-4">
+            {renderView()}
+            {/* <div>
+              <div className="mt-2">
+                <Input
+                  id="address"
+                  name="address"
+                  type="text"
+                  required
+                  autoComplete="address"
+                  value={address}
+                  onChange={onAddressChange}
+                  placeholder="Enter your shop address"
+                  ref={mobileInputRef as React.RefObject<HTMLInputElement>}
+                />
+              </div>
 
               <div className="mt-2 text-sm text-red-600 min-h-[20px]">
                 {errorMessage}
               </div>
-            </div>
+            </div> */}
 
-            <div>
-              <button
-                onClick={onSubmit}
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                {pageStep === "sing-in" ? "GET OTP" : "VERIFY OTP"}
-              </button>
-            </div>
+            <div></div>
           </div>
 
           <p className="mt-10 text-center text-sm/6 text-gray-500">
-            Not a members?{" "}
+            Already have an account?{" "}
             <a
               href="#"
               className="font-semibold text-indigo-600 hover:text-indigo-500"
             >
-              Sign Up Now
+              Sign In
             </a>
           </p>
         </div>

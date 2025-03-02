@@ -9,7 +9,7 @@ interface InputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   extraClassName?: string;
-  ref?: React.RefObject<HTMLInputElement> | null;
+  ref?: React.RefObject<HTMLInputElement>;
 }
 
 const Input = ({
