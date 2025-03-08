@@ -5,12 +5,13 @@ import { checkValidMobileNumber } from "../Utils";
 import NameAndPhone from "./NameAndPhone";
 import Otp from "./Otp";
 import LocationAndAddress from "./LocationAndAddress";
+import GeoLocation from "./GeoLocation";
 // import Stepper from "../components/Stepper";
 const Singup = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [pageStep, setPageStep] = useState("otp");
+  const [pageStep, setPageStep] = useState("geoLocation");
   const [shopName, setShopName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
@@ -67,6 +68,10 @@ const Singup = () => {
     return <LocationAndAddress />;
   };
 
+  const renderGeoLocation = () => {
+    return <GeoLocation />;
+  };
+
   const renderView = () => {
     switch (pageStep) {
       case "nameAndPhone":
@@ -75,6 +80,8 @@ const Singup = () => {
         return <>{renderOtp()}</>;
       case "locationAndAddress":
         return <>{renderLocationAndAddress()}</>;
+      case "geoLocation":
+        return <>{renderGeoLocation()}</>;
       default:
         return <></>;
     }

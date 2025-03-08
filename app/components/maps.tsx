@@ -6,16 +6,12 @@ const containerStyle = {
   height: "400px",
 };
 
-const center = {
-  lat: -3.745,
-  lng: -38.523,
-};
-
 interface MapRenderProps {
   currentLocation: { lat: number; lng: number };
+  onUpdateLocation: (event: any) => void;
 }
 
-function MapRender({ currentLocation }: MapRenderProps) {
+function MapRender({ currentLocation, onUpdateLocation }: MapRenderProps) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyD-hU8ShZa9sMcqzS4are3j4UsMK0o-Wp4",
@@ -23,7 +19,7 @@ function MapRender({ currentLocation }: MapRenderProps) {
 
   const [map, setMap] = React.useState(null);
 
-  const onLoad = React.useCallback(function callback(map) {
+  const onLoad = React.useCallback(function callback(map: any) {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
     const bounds = new window.google.maps.LatLngBounds(currentLocation);
     map.fitBounds(bounds);
@@ -31,19 +27,27 @@ function MapRender({ currentLocation }: MapRenderProps) {
     setMap(map);
   }, []);
 
-  const onUnmount = React.useCallback(function callback(map) {
+  const onUnmount = React.useCallback(function callback(map: any) {
     setMap(null);
   }, []);
 
+  const onDragEnd = (event: any) => {
+    console.log(event);
+    onUpdateLocation(event);
+  };
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={currentLocation}
-      zoom={18}
+      zoom={15}
       onLoad={onLoad}
       onUnmount={onUnmount}
     >
-      {/* <Marker onLoad={onLoad} position={currentLocation} /> */}
+      <Marker
+        position={currentLocation}
+        draggable={true}
+        onDragEnd={onDragEnd}
+      />
       {/* Child components, such as markers, info windows, etc. */}
       <></>
     </GoogleMap>
@@ -52,4 +56,4 @@ function MapRender({ currentLocation }: MapRenderProps) {
   );
 }
 
-export default React.memo(MapRender);
+export default MapRender;

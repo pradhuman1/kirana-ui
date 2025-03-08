@@ -29,7 +29,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full max-h:vh-screen overflow-y-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full max-h:vh-screen overflow-y-hidden:sm`}
       >
         {children}
       </body>
