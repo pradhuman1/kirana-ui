@@ -3,12 +3,14 @@ import { useState, useRef } from "react";
 import Input from "../components/input";
 import { checkValidMobileNumber } from "../Utils";
 import NameAndPhone from "./NameAndPhone";
-
+import Otp from "./Otp";
+import LocationAndAddress from "./LocationAndAddress";
+// import Stepper from "../components/Stepper";
 const Singup = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [pageStep, setPageStep] = useState("nameAndPhone");
+  const [pageStep, setPageStep] = useState("otp");
   const [shopName, setShopName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
@@ -57,10 +59,22 @@ const Singup = () => {
     return <NameAndPhone />;
   };
 
+  const renderOtp = () => {
+    return <Otp />;
+  };
+
+  const renderLocationAndAddress = () => {
+    return <LocationAndAddress />;
+  };
+
   const renderView = () => {
     switch (pageStep) {
       case "nameAndPhone":
         return <>{renderNameAndPhone()}</>;
+      case "otp":
+        return <>{renderOtp()}</>;
+      case "locationAndAddress":
+        return <>{renderLocationAndAddress()}</>;
       default:
         return <></>;
     }
@@ -75,10 +89,11 @@ const Singup = () => {
             src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
             className="mx-auto h-10 w-auto"
           />
-          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+          <div className="lg:mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
             Create a new account and start selling
-          </h2>
+          </div>
         </div>
+        {/* <Stepper /> */}
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="space-y-4">
@@ -105,16 +120,17 @@ const Singup = () => {
 
             <div></div>
           </div>
-
-          <p className="mt-10 text-center text-sm/6 text-gray-500">
-            Already have an account?{" "}
-            <a
-              href="#"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
-            >
-              Sign In
-            </a>
-          </p>
+          {pageStep == "nameAndPhone" && (
+            <p className="mt-10 text-center text-sm/6 text-gray-500">
+              Already have an account?{" "}
+              <a
+                href="#"
+                className="font-semibold text-indigo-600 hover:text-indigo-500"
+              >
+                Sign In
+              </a>
+            </p>
+          )}
         </div>
       </div>
     </>
