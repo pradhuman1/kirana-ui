@@ -9,9 +9,10 @@ import GeoLocation from "./GeoLocation";
 // import Stepper from "../components/Stepper";
 const Singup = () => {
   const [mobileNumber, setMobileNumber] = useState("");
+
   const [otp, setOtp] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [pageStep, setPageStep] = useState("geoLocation");
+  const [pageStep, setPageStep] = useState("nameAndPhone");
   const [shopName, setShopName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");

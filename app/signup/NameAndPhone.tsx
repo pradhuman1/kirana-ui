@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Input from "../components/input";
 import { checkValidMobileNumber, checkValidShopName } from "../Utils";
+import ApiHelper from "../Utils/apiHelper";
 
 const NameAndPhone = () => {
   const [mobileNumber, setMobileNumber] = useState("");
@@ -26,7 +27,7 @@ const NameAndPhone = () => {
     }
   };
 
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log("onSubmit called");
     console.log(mobileNumber);
@@ -44,6 +45,11 @@ const NameAndPhone = () => {
         inputElement.focus();
       }
     }
+    const response = await ApiHelper.post("/v1/auth/signup", {
+      mobileNumber,
+      shopName,
+    });
+    console.log(response);
   };
 
   useEffect(() => {}, []);
