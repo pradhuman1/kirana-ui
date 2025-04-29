@@ -1,22 +1,18 @@
-import axios from "axios";
+import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api",
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000/api',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
   timeout: 10000,
-  allowAbsoluteUrls: true,
 });
 
 apiClient.interceptors.request.use(
   (config) => {
-    const userData = localStorage.getItem("userData");
-    if (userData) {
-      const { token } = JSON.parse(userData);
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -29,7 +25,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
+      localStorage.removeItem('token');
     }
     return Promise.reject(error);
   }
@@ -48,8 +44,7 @@ const ApiHelper = {
   post: async (url, data = {}, config = {}) => {
     try {
       const response = await apiClient.post(url, data, config);
-      console.log("response", response);
-      return { status: response.status, data: response.data };
+      return response.data;
     } catch (error) {
       throw error;
     }
@@ -80,7 +75,7 @@ const ApiHelper = {
     } catch (error) {
       throw error;
     }
-  },
+  }
 };
 
-export default ApiHelper;
+export default ApiHelper; 

@@ -5,11 +5,23 @@ import TextArea from "../components/TextArea";
 import MapRender from "../components/maps";
 import Select from "../components/Select";
 import { checkValidAddress, checkValidLandmark } from "../Utils";
+import ApiHelper from "../Utils/apiHelper";
+import apiEndPoints from "../Utils/apiEndPoints";
+import { useUser } from "../context/UserContext";
 
-const LocationAndAddress = () => {
+interface LocationAndAddressProps {
+  onSubmitSuccess: () => void;
+}
+
+const LocationAndAddress = ({ onSubmitSuccess }: LocationAndAddressProps) => {
+  const { userData } = useUser();
+  const { businessId } = userData;
+  console.log("businessId from userData", businessId);
+
   const [currentLocation, setUserCurrentLocation] = useState<any>(null);
   const [pincode, setPincode] = useState<string>("");
   const [pincodeErrorMessage, setPincodeErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [city, setCity] = useState<{ id: number; label: string }>({
     id: 0,
@@ -73,19 +85,41 @@ const LocationAndAddress = () => {
     setCity(option);
   };
 
-  const onSubmit = () => {
-    if (!checkValidAddress(address)) {
-      setAddressErrorMessage("Please enter a valid address");
-    }
-    if (!checkValidLandmark(landmark)) {
-      setLandmarkErrorMessage("Please enter a valid landmark");
-    }
-    if (!checkValidPincode(pincode)) {
-      setPincodeErrorMessage("Please enter a valid pincode");
-    }
+  const onSubmit = async () => {
+    console.log("onSubmit called");
+    try {
+      if (!checkValidAddress(address)) {
+        setAddressErrorMessage("Please enter a valid address");
+      }
+      if (!checkValidLandmark(landmark)) {
+        setLandmarkErrorMessage("Please enter a valid landmark");
+      }
+      if (!checkValidPincode(pincode)) {
+        setPincodeErrorMessage("Please enter a valid pincode");
+      }
 
-    if (addressErrorMessage || landmarkErrorMessage || pincodeErrorMessage) {
-      return;
+      if (addressErrorMessage || landmarkErrorMessage || pincodeErrorMessage) {
+        return;
+      }
+      setIsLoading(true);
+      /*"name", "email", "type", "location", "address"*/
+      const responseObj = await ApiHelper.post(apiEndPoints.updateBusiness, {
+        businessId: localStorage.getItem("businessId"),
+        businessData: {
+          address: {
+            addressLine1: address,
+            landmark: landmark,
+            zipCode: pincode,
+            city: city.label,
+          },
+        },
+      });
+      console.log(responseObj);
+      setIsLoading(false);
+      onSubmitSuccess();
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
     }
   };
 
@@ -154,7 +188,7 @@ const LocationAndAddress = () => {
         onClick={onSubmit}
         className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 hover:cursor-pointer font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
-        Next Set Location
+        {isLoading ? "Processing..." : "Next Set Location"}
       </button>
     </>
   );

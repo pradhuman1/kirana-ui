@@ -1,8 +1,17 @@
 import { useState, useRef } from "react";
 import Input from "../components/input";
 import { checkValidOtp } from "../Utils";
+import ApiHelper from "../Utils/apiHelper";
+import apiEndPoints from "../Utils/apiEndPoints";
+import { useUser } from "../context/UserContext";
+interface OtpProps {
+  onSubmitSuccess: () => void;
+}
 
-const Otp = () => {
+const Otp = ({ onSubmitSuccess }: OtpProps) => {
+  const { userData, updateUserData } = useUser();
+  const { shopName, mobileNumber } = userData;
+  console.log("userData", userData);
   const [otp, setOtp] = useState("");
   const [otpErrorMessage, setOtpErrorMessage] = useState("");
 
@@ -14,7 +23,7 @@ const Otp = () => {
     setOtpErrorMessage("");
   };
 
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log("onSubmit called");
     console.log(otp);
@@ -23,6 +32,24 @@ const Otp = () => {
       const inputElement = otpInputRef.current;
       if (inputElement) {
         inputElement.focus();
+      }
+    } else {
+      try {
+        const responseObj = await ApiHelper.post(
+          apiEndPoints.verifyOtpAndCreateBusiness,
+          {
+            otp,
+            businessName: shopName,
+            phoneNumber: mobileNumber,
+          }
+        );
+        if (responseObj.status === 200) {
+          const { businessId, token } = responseObj.data;
+          updateUserData({ businessId, token });
+          onSubmitSuccess();
+        }
+      } catch (error) {
+        setOtpErrorMessage("Failed to verify OTP");
       }
     }
   };

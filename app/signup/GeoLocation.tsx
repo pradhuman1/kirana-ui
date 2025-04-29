@@ -10,8 +10,16 @@
 
 import MapRender from "../components/maps";
 import { useState, useEffect } from "react";
+import ApiHelper from "../Utils/apiHelper";
+import apiEndPoints from "../Utils/apiEndPoints";
+import { useUser } from "../context/UserContext";
 
-const GeoLocation = () => {
+interface GeoLocationProps {
+  onSubmitSuccess: () => void;
+}
+
+const GeoLocation = ({ onSubmitSuccess }: GeoLocationProps) => {
+  const { updateUserData } = useUser();
   const [userCurrentLocation, setUserCurrentLocation] = useState<any>(null);
   const [locationErrorMessage, setLocationErrorMessage] = useState<string>("");
 
@@ -49,11 +57,37 @@ const GeoLocation = () => {
       });
     }
   };
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const { lat, lng } = userCurrentLocation;
     if (!lat || !lng) {
       setLocationErrorMessage("Please select the location");
       return;
+    }
+    const locationCoordinates = {
+      latitude: lat,
+      longitude: lng,
+    };
+    try {
+      const responseObj = await ApiHelper.post(apiEndPoints.updateBusiness, {
+        businessData: {
+          locationCoordinates: locationCoordinates,
+        },
+      });
+
+      if (responseObj.status === 200) {
+        // Update user context with location
+        updateUserData({
+          locationCoordinates: locationCoordinates,
+        });
+        onSubmitSuccess();
+      } else {
+        setLocationErrorMessage(
+          responseObj.data.message || "Failed to update location"
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      setLocationErrorMessage("Failed to update location. Please try again.");
     }
   };
   return (
@@ -61,7 +95,7 @@ const GeoLocation = () => {
       <i>Click to update the current location</i>
       <button
         type="button"
-        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 hover:cursor-pointer font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 hover:cursor-pointer font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-[10px]"
         //className="rounded-sm bg-white px-2 py-1 text-xs font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50"
         onClick={() => {
           getLocation();
@@ -95,7 +129,7 @@ const GeoLocation = () => {
       />
       <button
         onClick={onSubmit}
-        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 hover:cursor-pointer font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 hover:cursor-pointer font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-[10px]"
       >
         Finish
       </button>
