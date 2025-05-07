@@ -132,12 +132,35 @@ export default function DashboardLayout({
                                 />
                                 {item.name}
                               </Link>
+                              {item.subItems && (
+                                <ul className="mt-1 space-y-1 pl-7">
+                                  {item.subItems.map((subItem) => {
+                                    const isSubActive =
+                                      pathname === subItem.href;
+                                    return (
+                                      <li key={subItem.name}>
+                                        <Link
+                                          href={subItem.href}
+                                          className={classNames(
+                                            isSubActive
+                                              ? "bg-indigo-700 text-white"
+                                              : "text-indigo-200 hover:bg-indigo-700 hover:text-white",
+                                            "group flex gap-x-3 rounded-md py-1.5 px-3 text-sm text-[13px]"
+                                          )}
+                                        >
+                                          {subItem.name}
+                                        </Link>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              )}
                             </li>
                           );
                         })}
                       </ul>
                     </li>
-                    <li>
+                    {/* <li>
                       <div className="text-xs/6 font-semibold text-indigo-200">
                         Your teams
                       </div>
@@ -161,7 +184,7 @@ export default function DashboardLayout({
                           </li>
                         ))}
                       </ul>
-                    </li>
+                    </li> */}
                     <li className="mt-auto">
                       <a
                         href="#"
@@ -220,6 +243,24 @@ export default function DashboardLayout({
                             />
                             {item.name}
                           </Link>
+                          {item.subItems && (
+                            <ul className="mt-1 space-y-1 pl-9">
+                              {item.subItems.map((subItem) => (
+                                <Link
+                                  key={subItem.name}
+                                  href={subItem.href}
+                                  className={classNames(
+                                    pathname === subItem.href
+                                      ? "bg-indigo-700 text-white"
+                                      : "text-indigo-200 hover:bg-indigo-700 hover:text-white",
+                                    "group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
+                                  )}
+                                >
+                                  {subItem.name}
+                                </Link>
+                              ))}
+                            </ul>
+                          )}
                         </li>
                       );
                     })}

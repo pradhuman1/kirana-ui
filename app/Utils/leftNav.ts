@@ -14,6 +14,10 @@ export const navigationItems = [
     href: "/dashboard/products",
     icon: FolderIcon,
     current: false,
+    subItems: [
+      { name: "Add Product", href: "/dashboard/products/add" },
+      //   { name: "Product List", href: "/dashboard/products" },
+    ],
   },
   {
     name: "Orders",

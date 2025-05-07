@@ -1,0 +1,92 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Nike Air Max 270",
+      "description": "The Nike Air Max 270 delivers visible cushioning under every step with a large window and fresh color combinations.",
+      "category": "Footwear",
+      "brand": "Nike",
+      "price": 150.0,
+      "stock": 100,
+      "image": "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/skwgyqrbfzhu6uyeh0gg/air-max-270-mens-shoes-KkLcGR.png",
+      "variants": [
+        {
+          "id": "1-1",
+          "size": "US 7",
+          "color": "Black",
+          "stock": 25,
+          "image": "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/5c6e1f0a-0a0a-0a0a-0a0a-0a0a0a0a0a0a/air-max-270-mens-shoes-black.png"
+        },
+        {
+          "id": "1-2",
+          "size": "US 8",
+          "color": "Black",
+          "stock": 30,
+          "image": "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/5c6e1f0a-0a0a-0a0a-0a0a-0a0a0a0a0a0a/air-max-270-mens-shoes-black.png"
+        },
+        {
+          "id": "1-3",
+          "size": "US 9",
+          "color": "White",
+          "stock": 45,
+          "image": "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/5c6e1f0a-0a0a-0a0a-0a0a-0a0a0a0a0a0a/air-max-270-mens-shoes-white.png"
+        }
+      ],
+      "relatedProducts": ["2", "3"]
+    },
+    {
+      "id": "2",
+      "name": "Adidas Ultraboost 22",
+      "description": "The Adidas Ultraboost 22 combines responsive cushioning with a supportive fit for your daily runs.",
+      "category": "Footwear",
+      "brand": "Adidas",
+      "price": 180.0,
+      "stock": 75,
+      "image": "https://assets.adidas.com/images/w_600,f_auto,q_auto/2c1a0a0a0a0a0a0a0a0a0a0a0a0a0a0a/ultraboost-22-shoes.jpg",
+      "variants": [
+        {
+          "id": "2-1",
+          "size": "US 7",
+          "color": "Blue",
+          "stock": 20,
+          "image": "https://assets.adidas.com/images/w_600,f_auto,q_auto/2c1a0a0a0a0a0a0a0a0a0a0a0a0a0a0a/ultraboost-22-shoes-blue.jpg"
+        },
+        {
+          "id": "2-2",
+          "size": "US 8",
+          "color": "Blue",
+          "stock": 25,
+          "image": "https://assets.adidas.com/images/w_600,f_auto,q_auto/2c1a0a0a0a0a0a0a0a0a0a0a0a0a0a0a/ultraboost-22-shoes-blue.jpg"
+        }
+      ],
+      "relatedProducts": ["1", "3"]
+    },
+    {
+      "id": "3",
+      "name": "Puma RS-X",
+      "description": "The Puma RS-X combines retro style with modern comfort for everyday wear.",
+      "category": "Footwear",
+      "brand": "Puma",
+      "price": 110.0,
+      "stock": 50,
+      "image": "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/371915/01/sv01/fnd/IND/fmt/png/RS-X-3-Puzzle-Unisex-Sneakers",
+      "variants": [
+        {
+          "id": "3-1",
+          "size": "US 7",
+          "color": "Red",
+          "stock": 15,
+          "image": "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/371915/01/sv01/fnd/IND/fmt/png/RS-X-3-Puzzle-Unisex-Sneakers-Red"
+        },
+        {
+          "id": "3-2",
+          "size": "US 8",
+          "color": "Red",
+          "stock": 20,
+          "image": "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_600,h_600/global/371915/01/sv01/fnd/IND/fmt/png/RS-X-3-Puzzle-Unisex-Sneakers-Red"
+        }
+      ],
+      "relatedProducts": ["1", "2"]
+    }
+  ]
+}
