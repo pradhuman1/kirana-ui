@@ -7,6 +7,7 @@ import Input from "@/app/components/input";
 import TextArea from "@/app/components/TextArea";
 import Button from "@/app/components/Button";
 import SearchEntity from "@/app/components/Functional/SearchEntity";
+import ImagePreview from "@/app/components/Functional/ImagePreview";
 
 interface Product {
   id: string;
@@ -161,49 +162,23 @@ export default function ManualUpload() {
               Product Image
             </label>
             <div className="mt-2 flex justify-center">
-              <div className="relative w-full max-w-[200px] aspect-square rounded-lg overflow-hidden border border-gray-200">
-                {imagePreview ? (
-                  <div className="relative w-full h-full">
-                    <img
-                      src={imagePreview}
-                      alt="Product preview"
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImagePreview(null);
-                        setFormData({ ...formData, image: "" });
-                      }}
-                      className="absolute top-2 right-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
-                    >
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                    <PhotoIcon className="h-12 w-12 text-gray-300" />
-                    <input
-                      id="image-upload"
-                      name="image-upload"
-                      type="file"
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                    />
-                  </div>
+              <div className="relative w-full max-w-[200px]">
+                <ImagePreview
+                  imageUrl={imagePreview}
+                  onRemove={() => {
+                    setImagePreview(null);
+                    setFormData({ ...formData, image: "" });
+                  }}
+                />
+                {!imagePreview && (
+                  <input
+                    id="image-upload"
+                    name="image-upload"
+                    type="file"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
                 )}
               </div>
             </div>
@@ -214,16 +189,6 @@ export default function ManualUpload() {
               <h3 className="text-lg font-medium text-gray-900">
                 You can choose to add variants also
               </h3>
-              {/* {formData.variants.length < 6 && (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  onClick={addVariant}
-                >
-                  Add Variant
-                </Button>
-              )} */}
             </div>
             <div
               className={`grid gap-4 ${
@@ -236,21 +201,27 @@ export default function ManualUpload() {
             >
               {formData.variants.map((variant, index) => (
                 <div key={index} className="flex flex-col items-center">
-                  <div className="relative w-full aspect-square rounded-lg overflow-hidden border border-gray-200">
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                      <PhotoIcon className="h-12 w-12 text-gray-300" />
-                    </div>
-                    <input
-                      type="file"
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      accept="image/*"
-                      onChange={(e) => handleVariantImageChange(index, e)}
+                  <div className="relative w-full">
+                    <ImagePreview
+                      imageUrl={variantImagePreviews[index]}
+                      onRemove={() => {
+                        const newPreviews = [...variantImagePreviews];
+                        newPreviews[index] = null;
+                        setVariantImagePreviews(newPreviews);
+                        const newVariants = [...formData.variants];
+                        newVariants[index] = {
+                          ...newVariants[index],
+                          image: "",
+                        };
+                        setFormData({ ...formData, variants: newVariants });
+                      }}
                     />
-                    {variantImagePreviews[index] && (
-                      <img
-                        src={variantImagePreviews[index] || ""}
-                        alt={`Variant ${index + 1}`}
-                        className="w-full h-full object-cover"
+                    {!variantImagePreviews[index] && (
+                      <input
+                        type="file"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        accept="image/*"
+                        onChange={(e) => handleVariantImageChange(index, e)}
                       />
                     )}
                   </div>
