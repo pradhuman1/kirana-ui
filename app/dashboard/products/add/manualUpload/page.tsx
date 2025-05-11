@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Combobox } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 import productsData from "@/app/data/products.json";
 import Input from "@/app/components/input";
@@ -161,16 +161,16 @@ export default function ManualUpload() {
               className="w-full rounded-lg border border-gray-300 py-2 pl-3 pr-10 text-sm leading-5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               onChange={(event) => setQuery(event.target.value)}
               displayValue={(product: Product) => product?.name ?? ""}
-              placeholder="Search for existing products..."
+              placeholder="Search from product catalogue..."
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-              <ChevronUpDownIcon
+              <MagnifyingGlassIcon
                 className="h-5 w-5 text-gray-400"
                 aria-hidden="true"
               />
             </Combobox.Button>
           </div>
-          <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-[calc(100%-3rem)] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {filteredProducts.length === 0 && query !== "" ? (
               <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                 No products found. You can add a new one below.
@@ -215,18 +215,18 @@ export default function ManualUpload() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div className="sm:col-span-2">
+          <div className="sm:col-span-2 main-product-image">
             <label className="block text-sm font-medium text-gray-700">
               Product Image
             </label>
-            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-              <div className="text-center">
+            <div className="mt-2 flex justify-center">
+              <div className="relative w-full max-w-[200px] aspect-square rounded-lg overflow-hidden border border-gray-200">
                 {imagePreview ? (
-                  <div className="relative">
+                  <div className="relative w-full h-full">
                     <img
                       src={imagePreview}
                       alt="Product preview"
-                      className="mx-auto h-32 w-32 object-cover rounded-lg"
+                      className="w-full h-full object-cover"
                     />
                     <button
                       type="button"
@@ -234,7 +234,7 @@ export default function ManualUpload() {
                         setImagePreview(null);
                         setFormData({ ...formData, image: "" });
                       }}
-                      className="absolute -top-2 -right-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
+                      className="absolute top-2 right-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
                     >
                       <svg
                         className="h-4 w-4"
@@ -252,34 +252,74 @@ export default function ManualUpload() {
                     </button>
                   </div>
                 ) : (
-                  <>
-                    <PhotoIcon
-                      className="mx-auto h-12 w-12 text-gray-300"
-                      aria-hidden="true"
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                    <PhotoIcon className="h-12 w-12 text-gray-300" />
+                    <input
+                      id="image-upload"
+                      name="image-upload"
+                      type="file"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      accept="image/*"
+                      onChange={handleImageChange}
                     />
-                    <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                      <label
-                        htmlFor="image-upload"
-                        className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                      >
-                        <span>Upload a file</span>
-                        <input
-                          id="image-upload"
-                          name="image-upload"
-                          type="file"
-                          className="sr-only"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                        />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
-                    </div>
-                    <p className="text-xs leading-5 text-gray-600">
-                      PNG, JPG, GIF up to 10MB
-                    </p>
-                  </>
+                  </div>
                 )}
               </div>
+            </div>
+          </div>
+
+          <div className="sm:col-span-2 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                You can choose to add variants also
+              </h3>
+              {/* {formData.variants.length < 6 && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={addVariant}
+                >
+                  Add Variant
+                </Button>
+              )} */}
+            </div>
+            <div
+              className={`grid gap-4 ${
+                formData.variants.length === 1
+                  ? "grid-cols-1"
+                  : formData.variants.length === 2
+                  ? "grid-cols-2"
+                  : "grid-cols-3"
+              }`}
+            >
+              {formData.variants.map((variant, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <div className="relative w-full aspect-square rounded-lg overflow-hidden border border-gray-200">
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                      <PhotoIcon className="h-12 w-12 text-gray-300" />
+                    </div>
+                    <input
+                      type="file"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      accept="image/*"
+                      onChange={(e) => handleVariantImageChange(index, e)}
+                    />
+                    {variantImagePreviews[index] && (
+                      <img
+                        src={variantImagePreviews[index] || ""}
+                        alt={`Variant ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <p className="mt-2 text-sm text-gray-600">
+                    {variant.size && variant.color
+                      ? `${variant.size} - ${variant.color}`
+                      : `Variant ${index + 1}`}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -349,7 +389,8 @@ export default function ManualUpload() {
               onChange={(e) =>
                 setFormData({ ...formData, stock: e.target.value })
               }
-              required
+              required={true}
+              infoMessage="Stock available in your shop"
             />
           </div>
         </div>
@@ -366,133 +407,18 @@ export default function ManualUpload() {
           />
         </div>
 
-        <div>
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium text-gray-900">Variants</h3>
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
+          <div className="w-full px-4 sm:px-6 md:max-w-4xl md:mx-auto flex justify-end">
             <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={addVariant}
+              type="submit"
+              variant="primary"
+              className="w-full sm:w-auto"
             >
-              Add Variant
+              Add Product
             </Button>
           </div>
-
-          <div className="mt-4 space-y-4">
-            {formData.variants.map((variant, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-1 gap-4 sm:grid-cols-5"
-              >
-                <div className="sm:col-span-1">
-                  <div className="relative">
-                    {variantImagePreviews[index] ? (
-                      <div className="relative">
-                        <img
-                          src={variantImagePreviews[index] || ""}
-                          alt={`${variant.color} ${variant.size} variant`}
-                          className="h-20 w-20 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const newPreviews = [...variantImagePreviews];
-                            newPreviews[index] = null;
-                            setVariantImagePreviews(newPreviews);
-                            const newVariants = [...formData.variants];
-                            newVariants[index] = {
-                              ...newVariants[index],
-                              image: "",
-                            };
-                            setFormData({ ...formData, variants: newVariants });
-                          }}
-                          className="absolute -top-2 -right-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200"
-                        >
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    ) : (
-                      <label className="flex flex-col items-center justify-center h-20 w-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-indigo-500">
-                        <PhotoIcon className="h-6 w-6 text-gray-400" />
-                        <input
-                          type="file"
-                          className="hidden"
-                          accept="image/*"
-                          onChange={(e) => handleVariantImageChange(index, e)}
-                        />
-                      </label>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <Input
-                    id={`variant-size-${index}`}
-                    name={`variant-size-${index}`}
-                    type="text"
-                    placeholder="Size"
-                    value={variant.size}
-                    onChange={(e) =>
-                      updateVariant(index, "size", e.target.value)
-                    }
-                  />
-                </div>
-                <div>
-                  <Input
-                    id={`variant-color-${index}`}
-                    name={`variant-color-${index}`}
-                    type="text"
-                    placeholder="Color"
-                    value={variant.color}
-                    onChange={(e) =>
-                      updateVariant(index, "color", e.target.value)
-                    }
-                  />
-                </div>
-                <div>
-                  <Input
-                    id={`variant-stock-${index}`}
-                    name={`variant-stock-${index}`}
-                    type="number"
-                    placeholder="Stock"
-                    value={variant.stock}
-                    onChange={(e) =>
-                      updateVariant(index, "stock", e.target.value)
-                    }
-                  />
-                </div>
-                <div>
-                  <Button
-                    type="button"
-                    variant="danger"
-                    size="sm"
-                    onClick={() => removeVariant(index)}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
-
-        <div className="flex justify-end">
-          <Button type="submit" variant="primary">
-            Add Product
-          </Button>
-        </div>
+        <div className="h-20"></div>
       </form>
     </div>
   );

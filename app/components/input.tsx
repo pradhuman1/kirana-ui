@@ -13,6 +13,7 @@ interface InputProps {
   extraClassName?: string;
   label?: string;
   errorMessage?: string;
+  infoMessage?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -30,6 +31,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       extraClassName = "",
       errorMessage = "",
       label,
+      infoMessage = "",
     },
     ref
   ) => {
@@ -42,6 +44,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           >
             {label}
           </label>
+        )}
+        {infoMessage && (
+          <p className="text-sm text-gray-500 mb-2">{infoMessage}</p>
         )}
         <div className="mt-2">
           <input
