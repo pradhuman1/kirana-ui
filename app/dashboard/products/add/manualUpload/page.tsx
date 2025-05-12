@@ -159,12 +159,15 @@ export default function ManualUpload() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="sm:col-span-2 main-product-image">
             <label className="block text-sm font-medium text-gray-700">
-              Product Image
+              Product Photo
             </label>
             <div className="mt-2 flex justify-center">
               <div className="relative w-full max-w-[200px]">
                 <ImagePreview
-                  imageUrl={imagePreview}
+                  imageUrl={
+                    imagePreview ||
+                    "https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=360/app/images/products/sliding_image/127144a.jpg?ts=1690815073"
+                  }
                   onRemove={() => {
                     setImagePreview(null);
                     setFormData({ ...formData, image: "" });
