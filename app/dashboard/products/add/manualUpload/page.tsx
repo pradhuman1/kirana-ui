@@ -143,10 +143,10 @@ export default function ManualUpload() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-semibold mb-6">Add New Product</h1>
+    <div className="max-w-4xl mx-auto">
+      <h1 className="text-2xl font-semibold mb-5">Add New Product</h1>
 
-      <div className="mb-8">
+      <div className="mb-5">
         <SearchEntity
           entities={productsData.products}
           selectedEntity={selectedProduct}
@@ -156,11 +156,8 @@ export default function ManualUpload() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1  sm:grid-cols-2">
           <div className="sm:col-span-2 main-product-image">
-            <label className="block text-sm font-medium text-gray-700">
-              Product Photo
-            </label>
             <div className="mt-2 flex justify-center">
               <div className="relative w-full max-w-[200px]">
                 <ImagePreview
@@ -184,57 +181,6 @@ export default function ManualUpload() {
                   />
                 )}
               </div>
-            </div>
-          </div>
-
-          <div className="sm:col-span-2 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900">
-                You can choose to add variants also
-              </h3>
-            </div>
-            <div
-              className={`grid gap-4 ${
-                formData.variants.length === 1
-                  ? "grid-cols-1"
-                  : formData.variants.length === 2
-                  ? "grid-cols-2"
-                  : "grid-cols-3"
-              }`}
-            >
-              {formData.variants.map((variant, index) => (
-                <div key={index} className="flex flex-col items-center">
-                  <div className="relative w-full">
-                    <ImagePreview
-                      imageUrl={variantImagePreviews[index]}
-                      onRemove={() => {
-                        const newPreviews = [...variantImagePreviews];
-                        newPreviews[index] = null;
-                        setVariantImagePreviews(newPreviews);
-                        const newVariants = [...formData.variants];
-                        newVariants[index] = {
-                          ...newVariants[index],
-                          image: "",
-                        };
-                        setFormData({ ...formData, variants: newVariants });
-                      }}
-                    />
-                    {!variantImagePreviews[index] && (
-                      <input
-                        type="file"
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        accept="image/*"
-                        onChange={(e) => handleVariantImageChange(index, e)}
-                      />
-                    )}
-                  </div>
-                  <p className="mt-2 text-sm text-gray-600">
-                    {variant.size && variant.color
-                      ? `${variant.size} - ${variant.color}`
-                      : `Variant ${index + 1}`}
-                  </p>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -280,33 +226,35 @@ export default function ManualUpload() {
             />
           </div>
 
-          <div>
-            <Input
-              id="price"
-              name="price"
-              type="number"
-              label="Price"
-              value={formData.price}
-              onChange={(e) =>
-                setFormData({ ...formData, price: e.target.value })
-              }
-              required
-            />
-          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Input
+                id="price"
+                name="price"
+                type="number"
+                label="Price"
+                value={formData.price}
+                onChange={(e) =>
+                  setFormData({ ...formData, price: e.target.value })
+                }
+                required
+              />
+            </div>
 
-          <div>
-            <Input
-              id="stock"
-              name="stock"
-              type="number"
-              label="Stock"
-              value={formData.stock}
-              onChange={(e) =>
-                setFormData({ ...formData, stock: e.target.value })
-              }
-              required={true}
-              infoMessage="Stock available in your shop"
-            />
+            <div>
+              <Input
+                id="stock"
+                name="stock"
+                type="number"
+                label="Stock"
+                value={formData.stock}
+                onChange={(e) =>
+                  setFormData({ ...formData, stock: e.target.value })
+                }
+                required={true}
+                // infoMessage="Stock available in your shop"
+              />
+            </div>
           </div>
         </div>
 
@@ -321,8 +269,58 @@ export default function ManualUpload() {
             }
           />
         </div>
+        <div className="sm:col-span-2 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-medium text-gray-900">
+              Similar Products
+            </h3>
+          </div>
+          <div
+            className={`grid gap-4 ${
+              formData.variants.length === 1
+                ? "grid-cols-3"
+                : formData.variants.length === 2
+                ? "grid-cols-2"
+                : "grid-cols-3"
+            }`}
+          >
+            {formData.variants.map((variant, index) => (
+              <div key={index} className="flex flex-col items-center">
+                <div className="relative w-full">
+                  <ImagePreview
+                    imageUrl={variantImagePreviews[index]}
+                    onRemove={() => {
+                      const newPreviews = [...variantImagePreviews];
+                      newPreviews[index] = null;
+                      setVariantImagePreviews(newPreviews);
+                      const newVariants = [...formData.variants];
+                      newVariants[index] = {
+                        ...newVariants[index],
+                        image: "",
+                      };
+                      setFormData({ ...formData, variants: newVariants });
+                    }}
+                  />
+                  {!variantImagePreviews[index] && (
+                    <input
+                      type="file"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      accept="image/*"
+                      onChange={(e) => handleVariantImageChange(index, e)}
+                    />
+                  )}
+                </div>
+                <p className="mt-2 text-sm text-gray-600">
+                  {variant.size && variant.color
+                    ? `${variant.size} - ${variant.color}`
+                    : `Variant ${index + 1}`}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
+        <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
           <div className="w-full px-4 sm:px-6 md:max-w-4xl md:mx-auto flex justify-end">
             <Button
               type="submit"
@@ -333,7 +331,6 @@ export default function ManualUpload() {
             </Button>
           </div>
         </div>
-        <div className="h-20"></div>
       </form>
     </div>
   );
