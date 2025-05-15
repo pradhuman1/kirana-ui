@@ -45,7 +45,7 @@ export default function AddProduct() {
         </Link>
 
         <Link
-          href="/dashboard/products/add/manual"
+          href="/dashboard/products/add/manualUpload"
           className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 text-left hover:bg-gray-50 hover:cursor-pointer"
         >
           <PencilSquareIcon className="h-6 w-6 text-gray-600" />
