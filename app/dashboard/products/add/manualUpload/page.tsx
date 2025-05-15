@@ -156,8 +156,8 @@ export default function ManualUpload() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1  sm:grid-cols-2">
-          <div className="sm:col-span-2 main-product-image">
+        <div className="grid grid-cols-1 gap-4">
+          <div className="sm:col-span-1 main-product-image">
             <div className="mt-2 flex justify-center">
               <div className="relative w-full max-w-[200px]">
                 <ImagePreview
@@ -226,7 +226,7 @@ export default function ManualUpload() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-1 gap-4">
             <div>
               <Input
                 id="price"
