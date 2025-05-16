@@ -26,8 +26,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [userData, setUserData] = useState<UserData>({});
 
   const updateUserData = (data: Partial<UserData>) => {
-    setUserData((prev) => ({ ...prev, ...data }));
-    localStorage.setItem("userData", JSON.stringify(data));
+    setUserData((prev) => {
+      const newData = { ...prev, ...data };
+      localStorage.setItem("userData", JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const loadUserDataFromStorage = () => {

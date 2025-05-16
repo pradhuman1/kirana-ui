@@ -9,11 +9,17 @@ const userNavigation = [
 
 export default function UserProfile() {
   const { userData } = useUser();
+  console.log(userData);
+  console.log("userData");
 
   const getUserDisplayName = () => {
+    if (userData.shopName) {
+      return userData.shopName;
+    }
     if (userData.mobileNumber) {
       return userData.mobileNumber;
     }
+    return "";
   };
 
   return (

@@ -23,8 +23,8 @@ const Signup = () => {
     }
     if (step === "signupComplete") {
       router.push("/dashboard");
-      setPageStep(step);
     }
+    setPageStep(step);
   };
 
   const renderView = () => {
