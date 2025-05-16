@@ -4,8 +4,10 @@ import NameAndPhone from "./NameAndPhone";
 import Otp from "./Otp";
 import LocationAndAddress from "./LocationAndAddress";
 import GeoLocation from "./GeoLocation";
+import { useRouter } from "next/navigation";
 
 const Signup = () => {
+  const router = useRouter();
   const getPageStep = () => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("pageStep") || "nameAndPhone";
@@ -16,9 +18,12 @@ const Signup = () => {
   const [pageStep, setPageStep] = useState(getPageStep);
 
   const updatePageStep = (step: string) => {
-    setPageStep(step);
     if (typeof window !== "undefined") {
       localStorage.setItem("pageStep", step);
+    }
+    if (step === "signupComplete") {
+      router.push("/dashboard");
+      setPageStep(step);
     }
   };
 
