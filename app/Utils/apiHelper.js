@@ -29,7 +29,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
+      logoutUser();
     }
     return Promise.reject(error);
   }
@@ -81,6 +81,12 @@ const ApiHelper = {
       throw error;
     }
   },
+};
+
+export const logoutUser = async () => {
+  localStorage.clear();
+  sessionStorage.clear();
+  window.location.href = "/login";
 };
 
 export default ApiHelper;

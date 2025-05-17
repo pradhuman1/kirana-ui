@@ -1,11 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useUser } from "@/app/context/UserContext";
-
-const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
-];
+import { logoutUser } from "@/app/Utils/apiHelper";
 
 export default function UserProfile() {
   const { userData } = useUser();
@@ -24,6 +20,15 @@ export default function UserProfile() {
     return "";
   };
 
+  const handleLogout = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    logoutUser();
+  };
+
+  const userNavigation = [
+    { name: "Your profile", href: "#" },
+    { name: "Sign out", href: "#", action: handleLogout },
+  ];
   return (
     <Menu as="div" className="relative">
       <MenuButton className="-m-1.5 flex items-center p-1.5">
@@ -56,6 +61,7 @@ export default function UserProfile() {
             <a
               href={item.href}
               className="block px-3 py-1 text-sm/6 text-gray-900 data-focus:bg-gray-50 data-focus:outline-hidden"
+              onClick={item.action}
             >
               {item.name}
             </a>
