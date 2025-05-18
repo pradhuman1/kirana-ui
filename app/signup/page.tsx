@@ -5,6 +5,7 @@ import Otp from "./Otp";
 import LocationAndAddress from "./LocationAndAddress";
 import GeoLocation from "./GeoLocation";
 import { useRouter } from "next/navigation";
+import RedirectionInfo from "../components/Functional/RedirectionInfo";
 
 const Signup = () => {
   const router = useRouter();
@@ -68,6 +69,11 @@ const Signup = () => {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         {renderView()}
       </div>
+      <RedirectionInfo
+        message="Already a member?"
+        linkText="Login Now"
+        href="/login"
+      />
     </div>
   );
 };

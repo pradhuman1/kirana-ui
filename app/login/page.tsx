@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { checkValidMobileNumber } from "../Utils";
+import RedirectionInfo from "../components/Functional/RedirectionInfo";
 
 const Login = () => {
   const [mobileNumber, setMobileNumber] = useState("");
@@ -153,15 +154,11 @@ const Login = () => {
             </div>
           </div>
 
-          <p className="mt-10 text-center text-sm/6 text-gray-500">
-            Not a members?{" "}
-            <a
-              href="#"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
-            >
-              Sign Up Now
-            </a>
-          </p>
+          <RedirectionInfo
+            message="Not a member?"
+            linkText="Sign Up Now"
+            href="/signup"
+          />
         </div>
       </div>
     </>

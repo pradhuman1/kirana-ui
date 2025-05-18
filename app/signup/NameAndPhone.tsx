@@ -70,7 +70,13 @@ const NameAndPhone = ({ onSubmitSuccess }: NameAndPhoneProps) => {
         );
       }
     } catch (error) {
-      setMobileErrorMessage("Failed to submit. Please try again.");
+      const err = error as { message?: string };
+      if (err?.message) {
+        console.log("error in catch", err);
+        setMobileErrorMessage(err.message);
+      } else {
+        setMobileErrorMessage("Failed to submit. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

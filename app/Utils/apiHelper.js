@@ -51,7 +51,12 @@ const ApiHelper = {
       console.log("response", response);
       return { status: response.status, data: response.data };
     } catch (error) {
-      throw error;
+      if (error.response?.data) {
+        console.log("error in post", error.response.data);
+        throw { ...error.response.data };
+      } else {
+        throw error;
+      }
     }
   },
 
