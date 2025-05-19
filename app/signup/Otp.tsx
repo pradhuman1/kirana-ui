@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
 import Input from "../components/input";
 import { checkValidOtp } from "../Utils";
-import ApiHelper from "../Utils/apiHelper";
+import ApiHelper, { handleApiError } from "../Utils/apiHelper";
 import apiEndPoints from "../Utils/apiEndPoints";
 import { useUser } from "../context/UserContext";
+
 interface OtpProps {
   onSubmitSuccess: () => void;
 }
@@ -49,7 +50,8 @@ const Otp = ({ onSubmitSuccess }: OtpProps) => {
           onSubmitSuccess();
         }
       } catch (error) {
-        setOtpErrorMessage("Failed to verify OTP");
+        const { message } = handleApiError(error, "Failed to verify OTP");
+        setOtpErrorMessage(message);
       }
     }
   };

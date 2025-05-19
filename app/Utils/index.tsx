@@ -1,3 +1,6 @@
+import ApiHelper from "./apiHelper";
+import apiEndPoints from "./apiEndPoints";
+
 export const checkValidMobileNumber = (mobileNumber: string) => {
   if (mobileNumber.length !== 10) {
     return false;
@@ -51,4 +54,78 @@ export const checkValidLandmark = (landmark: string = "") => {
     return false;
   }
   return true;
+};
+
+interface VerifyOtpResponse {
+  businessId: string;
+  token: string;
+}
+
+interface VerifyOtpParams {
+  otp: string;
+  businessName: string;
+  phoneNumber: string;
+  updateUserData: (data: { businessId: string; token: string }) => void;
+  onSubmitSuccess: () => void;
+}
+
+interface ApiError {
+  message?: string;
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
+export const getErrorMessage = (
+  error: unknown,
+  defaultMessage: string = "Something went wrong"
+): string => {
+  const apiError = error as ApiError;
+
+  // Check for direct message property
+  if (apiError?.message) {
+    return apiError.message;
+  }
+
+  // Check for response data message (common in axios errors)
+  if (apiError?.response?.data?.message) {
+    return apiError.response.data.message;
+  }
+
+  return defaultMessage;
+};
+
+export const verifyOtpAndCreateBusiness = async ({
+  otp,
+  businessName,
+  phoneNumber,
+  updateUserData,
+  onSubmitSuccess,
+}: VerifyOtpParams): Promise<{ error?: string }> => {
+  if (!checkValidOtp(otp)) {
+    return { error: "Please enter a valid OTP" };
+  }
+
+  try {
+    const responseObj = await ApiHelper.post(
+      apiEndPoints.verifyOtpAndCreateBusiness,
+      {
+        otp,
+        businessName,
+        phoneNumber,
+      }
+    );
+
+    if (responseObj.status === 200) {
+      const { businessId, token } = responseObj.data;
+      updateUserData({ businessId, token });
+      onSubmitSuccess();
+      return {};
+    }
+    return { error: "Failed to verify OTP" };
+  } catch (error) {
+    return { error: getErrorMessage(error, "Failed to verify OTP") };
+  }
 };
