@@ -4,6 +4,7 @@ const apiEndPoints = {
   updateBusiness: "/auth/update-business",
   searchProducts: "/auth/products/search",
   addProduct: "/inventory/add-inventory",
+  getBusinessInventory: "/inventory/get-business-inventory",
 };
 
 export default apiEndPoints;

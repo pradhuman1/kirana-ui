@@ -4,6 +4,7 @@ import { ShoppingBagIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import AddProductModal from "./AddProductModal";
 import { useRouter } from "next/navigation";
+import InventoryTable from "./InventoryTable";
 // import {
 //   BarcodeIcon,
 //   ArrowUpTrayIcon,
@@ -28,16 +29,17 @@ export default function Products() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
-      <div className="mt-6">
-        <NoData
-          noDataTitle="No products found"
-          noDataText="Add a product to get started"
-          buttonText="Add Product"
-          buttonAction={addProduct}
-          icon={<ShoppingBagIcon />}
-        />
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
+        <button
+          onClick={addProduct}
+          className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Add Product
+        </button>
       </div>
+
+      <InventoryTable />
 
       <AddProductModal
         isOpen={isModalOpen}
