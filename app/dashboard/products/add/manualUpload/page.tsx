@@ -1,31 +1,35 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PhotoIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import productsData from "@/app/data/products.json";
 import Input from "@/app/components/input";
 import TextArea from "@/app/components/TextArea";
 import Button from "@/app/components/Button";
 import SearchEntity from "@/app/components/Functional/SearchEntity";
 import ImagePreview from "@/app/components/Functional/ImagePreview";
+import ApiHelper from "@/app/Utils/apiHelper";
+import apiEndPoints from "@/app/Utils/apiEndPoints";
+import Notification from "@/app/components/Notification";
+
+interface ProductVariant {
+  productID: string;
+  productTitle: string;
+  weight: string;
+  price: string;
+  brand: string;
+  variants: ProductVariant[];
+  imagesUrl: string[];
+}
 
 interface Product {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
+  productID: string;
+  productTitle: string;
+  weight: string;
+  price: string;
   brand: string;
-  price: number;
-  stock: number;
-  image?: string;
-  variants: {
-    id: string;
-    size: string;
-    color: string;
-    stock: number;
-    image?: string;
-  }[];
-  relatedProducts: string[];
+  variants: ProductVariant[];
+  imagesUrl: string[];
 }
 
 interface Variant {
@@ -35,8 +39,19 @@ interface Variant {
   image?: string;
 }
 
+interface FormVariant {
+  size: string;
+  color: string;
+  stock: string;
+  image: string;
+  name: string;
+  price: string;
+  weight: string;
+}
+
 export default function ManualUpload() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [productStock, setProductStock] = useState<number>(0);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -45,33 +60,60 @@ export default function ManualUpload() {
     price: "",
     stock: "",
     image: "",
-    variants: [{ size: "", color: "", stock: "", image: "" }],
+    variants: [
+      {
+        size: "",
+        color: "",
+        stock: "",
+        image: "",
+        name: "",
+        price: "",
+        weight: "",
+      },
+    ] as FormVariant[],
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [variantImagePreviews, setVariantImagePreviews] = useState<
     (string | null)[]
   >([null]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error";
+    title?: string;
+  }>({
+    show: false,
+    message: "",
+    type: "success",
+    title: "Success",
+  });
 
   useEffect(() => {
     if (selectedProduct) {
       setFormData({
-        name: selectedProduct.name,
-        description: selectedProduct.description,
-        category: selectedProduct.category,
+        name: selectedProduct.productTitle,
+        description: "",
+        category: "",
         brand: selectedProduct.brand,
-        price: selectedProduct.price.toString(),
-        stock: selectedProduct.stock.toString(),
-        image: selectedProduct.image || "",
-        variants: selectedProduct.variants.map((v) => ({
-          size: v.size,
-          color: v.color,
-          stock: v.stock.toString(),
-          image: v.image || "",
-        })),
+        price: selectedProduct.price,
+        stock: "",
+        image: selectedProduct.imagesUrl[0] || "",
+        variants:
+          selectedProduct?.variants?.map((v) => ({
+            size: v.weight,
+            color: "",
+            stock: "",
+            image: v.imagesUrl?.[0] || "",
+            name: v.productTitle,
+            price: v.price,
+            weight: v.weight,
+          })) || [],
       });
-      setImagePreview(selectedProduct.image || null);
+      setImagePreview(selectedProduct.imagesUrl[0] || null);
       setVariantImagePreviews(
-        selectedProduct.variants.map((v) => v.image || null)
+        selectedProduct?.variants?.map((v) => v.imagesUrl?.[0] || null) || []
       );
     }
   }, [selectedProduct]);
@@ -111,10 +153,67 @@ export default function ManualUpload() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
+    if (!selectedProduct) return;
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      console.log("api", apiEndPoints.addProduct);
+      const response = await ApiHelper.post(apiEndPoints.addProduct, {
+        productId: selectedProduct.productID,
+        quantity: productStock,
+      });
+
+      if (response.data) {
+        // Show success notification
+        setNotification({
+          show: true,
+          message: `${selectedProduct.productTitle} successfully added`,
+          type: "success",
+          title: "Product Added",
+        });
+
+        // Reset form after successful submission
+        setSelectedProduct(null);
+        setProductStock(0);
+        setFormData({
+          name: "",
+          description: "",
+          category: "",
+          brand: "",
+          price: "",
+          stock: "",
+          image: "",
+          variants: [
+            {
+              size: "",
+              color: "",
+              stock: "",
+              image: "",
+              name: "",
+              price: "",
+              weight: "",
+            },
+          ],
+        });
+        setImagePreview(null);
+        setVariantImagePreviews([null]);
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to add inventory";
+      setError(errorMessage);
+      setNotification({
+        show: true,
+        message: errorMessage,
+        type: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const addVariant = () => {
@@ -122,7 +221,15 @@ export default function ManualUpload() {
       ...formData,
       variants: [
         ...formData.variants,
-        { size: "", color: "", stock: "", image: "" },
+        {
+          size: "",
+          color: "",
+          stock: "",
+          image: "",
+          name: "",
+          price: "",
+          weight: "",
+        },
       ],
     });
     setVariantImagePreviews([...variantImagePreviews, null]);
@@ -144,14 +251,47 @@ export default function ManualUpload() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      <Notification
+        show={notification.show}
+        title={notification.title}
+        message={notification.message}
+        type={notification.type}
+        onClose={() => setNotification((prev) => ({ ...prev, show: false }))}
+      />
       <h1 className="text-2xl font-semibold mb-5">Add New Product</h1>
 
       <div className="mb-5">
         <SearchEntity
-          entities={productsData.products}
           selectedEntity={selectedProduct}
-          onEntitySelect={setSelectedProduct}
+          onEntitySelect={(product) => {
+            setSelectedProduct(product);
+            if (!product) {
+              setFormData({
+                name: "",
+                description: "",
+                category: "",
+                brand: "",
+                price: "",
+                stock: "",
+                image: "",
+                variants: [
+                  {
+                    size: "",
+                    color: "",
+                    stock: "",
+                    image: "",
+                    name: "",
+                    price: "",
+                    weight: "",
+                  },
+                ],
+              });
+              setImagePreview(null);
+              setVariantImagePreviews([null]);
+            }
+          }}
           placeholder="Search from product catalogue..."
+          apiEndPoint={`product/search-product`}
         />
       </div>
 
@@ -195,6 +335,7 @@ export default function ManualUpload() {
                 setFormData({ ...formData, name: e.target.value })
               }
               required
+              isDisabled={true}
             />
           </div>
 
@@ -209,6 +350,7 @@ export default function ManualUpload() {
                 setFormData({ ...formData, brand: e.target.value })
               }
               required
+              isDisabled={true}
             />
           </div>
 
@@ -223,6 +365,7 @@ export default function ManualUpload() {
                 setFormData({ ...formData, category: e.target.value })
               }
               required
+              isDisabled={true}
             />
           </div>
 
@@ -238,6 +381,7 @@ export default function ManualUpload() {
                   setFormData({ ...formData, price: e.target.value })
                 }
                 required
+                isDisabled={true}
               />
             </div>
 
@@ -247,12 +391,11 @@ export default function ManualUpload() {
                 name="stock"
                 type="number"
                 label="Stock"
-                value={formData.stock}
-                onChange={(e) =>
-                  setFormData({ ...formData, stock: e.target.value })
-                }
+                value={productStock.toString()}
+                onChange={(e) => setProductStock(Number(e.target.value))}
                 required={true}
-                // infoMessage="Stock available in your shop"
+                infoMessage="If you don't know the stock, leave it blank"
+                isDisabled={false}
               />
             </div>
           </div>
@@ -311,8 +454,8 @@ export default function ManualUpload() {
                   )}
                 </div>
                 <p className="mt-2 text-sm text-gray-600">
-                  {variant.size && variant.color
-                    ? `${variant.size} - ${variant.color}`
+                  {variant.weight && variant.name
+                    ? `${variant.weight} - ${variant.name}`
                     : `Variant ${index + 1}`}
                 </p>
               </div>
@@ -320,14 +463,25 @@ export default function ManualUpload() {
           </div>
         </div>
 
-        <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
+        {error && (
+          <div className="rounded-md bg-red-50 p-4">
+            <div className="flex">
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">{error}</h3>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-49">
           <div className="w-full px-4 sm:px-6 md:max-w-4xl md:mx-auto flex justify-end">
             <Button
               type="submit"
               variant="primary"
               className="w-full sm:w-auto"
+              disabled={isSubmitting || !selectedProduct}
             >
-              Add Product
+              {isSubmitting ? "Adding..." : "Add Inventory"}
             </Button>
           </div>
         </div>

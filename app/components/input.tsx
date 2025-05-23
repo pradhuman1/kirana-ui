@@ -14,6 +14,7 @@ interface InputProps {
   label?: string;
   errorMessage?: string;
   infoMessage?: string;
+  isDisabled?: boolean;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -32,6 +33,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       errorMessage = "",
       label,
       infoMessage = "",
+      isDisabled = false,
     },
     ref
   ) => {
@@ -45,9 +47,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {label}
           </label>
         )}
-        {infoMessage && (
-          <p className="text-sm text-gray-500 mb-2">{infoMessage}</p>
-        )}
+
         <div className="mt-2">
           <input
             id={id}
@@ -64,7 +64,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 
       focus:outline-indigo-600 sm:text-sm/6 ${extraClassName}`}
             ref={ref}
+            disabled={isDisabled}
           />
+          {infoMessage && (
+            <p className="text-sm text-gray-500 mb-2">{infoMessage}</p>
+          )}
           {errorMessage && (
             <div className="text-sm text-red-600">{errorMessage}</div>
           )}

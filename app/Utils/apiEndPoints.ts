@@ -1,7 +1,9 @@
 const apiEndPoints = {
-  signupNew: "/public/signup-new",
-  verifyOtpAndCreateBusiness: "/public/verify-otp-and-create-business",
+  signupNew: "/public/auth/signup-new",
+  verifyOtpAndCreateBusiness: "/public/auth/verify-otp-and-create-business",
   updateBusiness: "/auth/update-business",
+  searchProducts: "/auth/products/search",
+  addProduct: "/inventory/add-inventory",
 };
 
 export default apiEndPoints;

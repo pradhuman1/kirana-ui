@@ -42,6 +42,7 @@ const Otp = ({ onSubmitSuccess }: OtpProps) => {
             otp,
             businessName: shopName,
             phoneNumber: mobileNumber,
+            type: "KIRANA",
           }
         );
         if (responseObj.status === 200) {
