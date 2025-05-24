@@ -5,6 +5,8 @@ const apiEndPoints = {
   searchProducts: "/auth/products/search",
   addProduct: "/inventory/add-inventory",
   getBusinessInventory: "/inventory/get-business-inventory",
+  initiateLogin: "/public/auth/initiate-login",
+  verifyOtpAndLogin: "/public/auth/verify-otp-and-login",
 };
 
 export default apiEndPoints;

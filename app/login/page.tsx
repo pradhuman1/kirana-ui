@@ -1,13 +1,21 @@
 "use client";
 import { useState, useRef } from "react";
-import { checkValidMobileNumber } from "../Utils";
+import { checkValidMobileNumber, checkValidOtp } from "../Utils";
 import RedirectionInfo from "../components/Functional/RedirectionInfo";
+import Input from "../components/input";
+import ApiHelper, { handleApiError } from "../Utils/apiHelper";
+import apiEndPoints from "../Utils/apiEndPoints";
+import { useRouter } from "next/navigation";
+import { useUser } from "../context/UserContext";
 
 const Login = () => {
+  const router = useRouter();
+  const { updateUserData } = useUser();
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [pageStep, setPageStep] = useState("sing-in");
+  const [isLoading, setIsLoading] = useState(false);
 
   const mobileInputRef = useRef<HTMLInputElement>(null);
 
@@ -19,65 +27,112 @@ const Login = () => {
     }
   };
 
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log("onSubmit called");
-    console.log(mobileNumber);
+  const initiateLogin = async () => {
     if (!checkValidMobileNumber(mobileNumber)) {
       setErrorMessage("Please enter a valid 10 digit mobile number");
       mobileInputRef.current?.focus();
-    } else {
-      setPageStep("otp");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await ApiHelper.post(apiEndPoints.initiateLogin, {
+        phoneNumber: mobileNumber,
+      });
+
+      if (response.status === 200) {
+        setPageStep("otp");
+        setErrorMessage("");
+      }
+    } catch (error) {
+      const { message } = handleApiError(error, "Failed to send OTP");
+      setErrorMessage(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const renderMobileInput = () => {
-    return (
-      <input
-        id="mobile"
-        name="mobile"
-        type="number"
-        required
-        autoComplete="mobile"
-        autoFocus={true}
-        value={mobileNumber}
-        onChange={onMobileChange}
-        placeholder="Enter your 10 digit mobile number"
-        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-        ref={mobileInputRef}
-      />
-    );
+  const verifyOtpAndLogin = async () => {
+    if (!checkValidOtp(otp)) {
+      setErrorMessage("Please enter a valid 4 digit OTP");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await ApiHelper.post(apiEndPoints.verifyOtpAndLogin, {
+        phoneNumber: mobileNumber,
+        otp,
+      });
+
+      if (response.status === 200) {
+        const { businessId, token } = response.data;
+        updateUserData({ businessId, token });
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      const { message } = handleApiError(error, "Failed to verify OTP");
+      setErrorMessage(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (pageStep === "sing-in") {
+      initiateLogin();
+    } else {
+      verifyOtpAndLogin();
+    }
   };
 
   const onOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setOtp(value);
-  };
-
-  const renderOtpInput = () => {
-    return (
-      <input
-        id="otp"
-        name="otp"
-        type="number"
-        required
-        autoComplete="mobile"
-        autoFocus={true}
-        value={otp}
-        onChange={onOtpChange}
-        placeholder="Enter the OTP"
-        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-        ref={mobileInputRef}
-      />
-    );
+    if (value.length === 4) {
+      setErrorMessage("");
+    }
   };
 
   const renderInput = () => {
     switch (pageStep) {
       case "sing-in":
-        return renderMobileInput();
+        return (
+          <Input
+            id="mobile"
+            name="mobile"
+            type="tel"
+            required
+            autoComplete="tel"
+            autoFocus={true}
+            value={mobileNumber}
+            onChange={onMobileChange}
+            placeholder="Enter your 10 digit mobile number"
+            label="Mobile Number"
+            errorMessage={errorMessage}
+            ref={mobileInputRef}
+            isDisabled={isLoading}
+          />
+        );
       case "otp":
-        return renderOtpInput();
+        return (
+          <Input
+            id="otp"
+            name="otp"
+            type="number"
+            required
+            autoComplete="one-time-code"
+            autoFocus={true}
+            value={otp}
+            onChange={onOtpChange}
+            placeholder="Enter the OTP"
+            label={`OTP sent to ${mobileNumber}`}
+            errorMessage={errorMessage}
+            ref={mobileInputRef}
+            isDisabled={isLoading}
+          />
+        );
       default:
         return null;
     }
@@ -99,57 +154,43 @@ const Login = () => {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <div className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                {pageStep === "sing-in"
-                  ? "Mobile Number"
-                  : `Otp sent to ${mobileNumber}`}
-              </label>
-              <div className="mt-2">{renderInput()}</div>
-
-              <div className="mt-2 text-sm text-red-600 min-h-[20px]">
-                {errorMessage}
-              </div>
-            </div>
-
-            {/* <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Password
-                </label>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
-            </div> */}
+            <div>{renderInput()}</div>
 
             <div>
               <button
                 onClick={onSubmit}
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-[10px]"
+                disabled={isLoading}
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 my-[10px] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {pageStep === "sing-in" ? "GET OTP" : "VERIFY OTP"}
+                {isLoading ? (
+                  <div className="flex items-center">
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Processing...
+                  </div>
+                ) : pageStep === "sing-in" ? (
+                  "GET OTP"
+                ) : (
+                  "VERIFY OTP"
+                )}
               </button>
             </div>
           </div>
