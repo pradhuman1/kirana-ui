@@ -4,7 +4,7 @@ import { ShoppingBagIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import AddProductModal from "./AddProductModal";
 import { useRouter } from "next/navigation";
-import InventoryTable from "./InventoryTable";
+import InventoryList from "./InventoryList";
 // import {
 //   BarcodeIcon,
 //   ArrowUpTrayIcon,
@@ -39,7 +39,7 @@ export default function Products() {
         </button>
       </div>
 
-      <InventoryTable />
+      <InventoryList />
 
       <AddProductModal
         isOpen={isModalOpen}

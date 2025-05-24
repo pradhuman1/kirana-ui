@@ -295,90 +295,45 @@ export default function ManualUpload() {
         />
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 gap-4">
-          <div className="sm:col-span-1 main-product-image">
-            <div className="mt-2 flex justify-center">
-              <div className="relative w-full max-w-[200px]">
-                <ImagePreview
-                  imageUrl={
-                    imagePreview ||
-                    "https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=360/app/images/products/sliding_image/127144a.jpg?ts=1690815073"
-                  }
-                  onRemove={() => {
-                    setImagePreview(null);
-                    setFormData({ ...formData, image: "" });
-                  }}
-                />
-                {!imagePreview && (
-                  <input
-                    id="image-upload"
-                    name="image-upload"
-                    type="file"
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    accept="image/*"
-                    onChange={handleImageChange}
+      {selectedProduct && (
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 gap-4">
+            <div className="sm:col-span-1 main-product-image">
+              <div className="mt-2 flex justify-center">
+                <div className="relative w-full max-w-[200px]">
+                  <ImagePreview
+                    imageUrl={
+                      imagePreview ||
+                      "https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=360/app/images/products/sliding_image/127144a.jpg?ts=1690815073"
+                    }
+                    onRemove={() => {
+                      setImagePreview(null);
+                      setFormData({ ...formData, image: "" });
+                    }}
                   />
-                )}
+                  {!imagePreview && (
+                    <input
+                      id="image-upload"
+                      name="image-upload"
+                      type="file"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              label="Product Name"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              required
-              isDisabled={true}
-            />
-          </div>
-
-          <div>
-            <Input
-              id="brand"
-              name="brand"
-              type="text"
-              label="Brand"
-              value={formData.brand}
-              onChange={(e) =>
-                setFormData({ ...formData, brand: e.target.value })
-              }
-              required
-              isDisabled={true}
-            />
-          </div>
-
-          <div>
-            <Input
-              id="category"
-              name="category"
-              type="text"
-              label="Category"
-              value={formData.category}
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value })
-              }
-              required
-              isDisabled={true}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-1 gap-4">
             <div>
               <Input
-                id="price"
-                name="price"
-                type="number"
-                label="Price"
-                value={formData.price}
+                id="name"
+                name="name"
+                type="text"
+                label="Product Name"
+                value={formData.name}
                 onChange={(e) =>
-                  setFormData({ ...formData, price: e.target.value })
+                  setFormData({ ...formData, name: e.target.value })
                 }
                 required
                 isDisabled={true}
@@ -387,105 +342,152 @@ export default function ManualUpload() {
 
             <div>
               <Input
-                id="stock"
-                name="stock"
-                type="number"
-                label="Stock"
-                value={productStock.toString()}
-                onChange={(e) => setProductStock(Number(e.target.value))}
-                required={true}
-                infoMessage="If you don't know the stock, leave it blank"
-                isDisabled={false}
+                id="brand"
+                name="brand"
+                type="text"
+                label="Brand"
+                value={formData.brand}
+                onChange={(e) =>
+                  setFormData({ ...formData, brand: e.target.value })
+                }
+                required
+                isDisabled={true}
               />
             </div>
-          </div>
-        </div>
 
-        <div>
-          <TextArea
-            name="description"
-            label="Description"
-            rows={3}
-            value={formData.description}
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
-          />
-        </div>
-        <div className="sm:col-span-2 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              Similar Products
-            </h3>
-          </div>
-          <div
-            className={`grid gap-4 ${
-              formData.variants.length === 1
-                ? "grid-cols-3"
-                : formData.variants.length === 2
-                ? "grid-cols-2"
-                : "grid-cols-3"
-            }`}
-          >
-            {formData.variants.map((variant, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="relative w-full">
-                  <ImagePreview
-                    imageUrl={variantImagePreviews[index]}
-                    onRemove={() => {
-                      const newPreviews = [...variantImagePreviews];
-                      newPreviews[index] = null;
-                      setVariantImagePreviews(newPreviews);
-                      const newVariants = [...formData.variants];
-                      newVariants[index] = {
-                        ...newVariants[index],
-                        image: "",
-                      };
-                      setFormData({ ...formData, variants: newVariants });
-                    }}
-                  />
-                  {!variantImagePreviews[index] && (
-                    <input
-                      type="file"
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      accept="image/*"
-                      onChange={(e) => handleVariantImageChange(index, e)}
-                    />
-                  )}
-                </div>
-                <p className="mt-2 text-sm text-gray-600">
-                  {variant.weight && variant.name
-                    ? `${variant.weight} - ${variant.name}`
-                    : `Variant ${index + 1}`}
-                </p>
+            <div>
+              <Input
+                id="category"
+                name="category"
+                type="text"
+                label="Category"
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
+                required
+                isDisabled={true}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-1 gap-4">
+              <div>
+                <Input
+                  id="price"
+                  name="price"
+                  type="number"
+                  label="Price"
+                  value={formData.price}
+                  onChange={(e) =>
+                    setFormData({ ...formData, price: e.target.value })
+                  }
+                  required
+                  isDisabled={true}
+                />
               </div>
-            ))}
-          </div>
-        </div>
 
-        {error && (
-          <div className="rounded-md bg-red-50 p-4">
-            <div className="flex">
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">{error}</h3>
+              <div>
+                <Input
+                  id="stock"
+                  name="stock"
+                  type="number"
+                  label="Stock"
+                  value={productStock.toString()}
+                  onChange={(e) => setProductStock(Number(e.target.value))}
+                  required={true}
+                  infoMessage="If you don't know the stock, leave it blank"
+                  isDisabled={false}
+                />
               </div>
             </div>
           </div>
-        )}
 
-        <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-49">
-          <div className="w-full px-4 sm:px-6 md:max-w-4xl md:mx-auto flex justify-end">
-            <Button
-              type="submit"
-              variant="primary"
-              className="w-full sm:w-auto"
-              disabled={isSubmitting || !selectedProduct}
-            >
-              {isSubmitting ? "Adding..." : "Add Inventory"}
-            </Button>
+          <div>
+            <TextArea
+              name="description"
+              label="Description"
+              rows={3}
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+            />
           </div>
-        </div>
-      </form>
+          <div className="sm:col-span-2 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                Similar Products
+              </h3>
+            </div>
+            <div
+              className={`grid gap-4 ${
+                formData.variants.length === 1
+                  ? "grid-cols-3"
+                  : formData.variants.length === 2
+                  ? "grid-cols-2"
+                  : "grid-cols-3"
+              }`}
+            >
+              {formData.variants.map((variant, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <div className="relative w-full">
+                    <ImagePreview
+                      imageUrl={variantImagePreviews[index]}
+                      onRemove={() => {
+                        const newPreviews = [...variantImagePreviews];
+                        newPreviews[index] = null;
+                        setVariantImagePreviews(newPreviews);
+                        const newVariants = [...formData.variants];
+                        newVariants[index] = {
+                          ...newVariants[index],
+                          image: "",
+                        };
+                        setFormData({ ...formData, variants: newVariants });
+                      }}
+                    />
+                    {!variantImagePreviews[index] && (
+                      <input
+                        type="file"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        accept="image/*"
+                        onChange={(e) => handleVariantImageChange(index, e)}
+                      />
+                    )}
+                  </div>
+                  <p className="mt-2 text-sm text-gray-600">
+                    {variant.weight && variant.name
+                      ? `${variant.weight} - ${variant.name}`
+                      : `Variant ${index + 1}`}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {error && (
+            <div className="rounded-md bg-red-50 p-4">
+              <div className="flex">
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-49">
+            <div className="w-full px-4 sm:px-6 md:max-w-4xl md:mx-auto flex justify-end">
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-full sm:w-auto"
+                disabled={isSubmitting || !selectedProduct}
+              >
+                {isSubmitting ? "Adding..." : "Add Inventory"}
+              </Button>
+            </div>
+          </div>
+        </form>
+      )}
     </div>
   );
 }

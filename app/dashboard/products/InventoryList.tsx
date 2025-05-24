@@ -5,8 +5,8 @@ import ApiHelper from "@/app/Utils/apiHelper";
 import apiEndPoints from "@/app/Utils/apiEndPoints";
 import { handleApiError } from "@/app/Utils/apiHelper";
 import ViewToggle, { ViewMode } from "./ViewToggle";
-import TableView from "./TableView";
-import GridView from "./GridView";
+import ProductTableView from "./ProductTableView";
+import ProductGridView from "./ProductGridView";
 
 interface InventoryItem {
   _id: string;
@@ -21,7 +21,7 @@ interface InventoryResponse {
   inventory: InventoryItem[];
 }
 
-export default function InventoryTable() {
+export default function InventoryList() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,9 +61,9 @@ export default function InventoryTable() {
     <div className="mt-8">
       <ViewToggle currentView={viewMode} onViewChange={setViewMode} />
       {viewMode === "table" ? (
-        <TableView inventory={inventory} />
+        <ProductTableView inventory={inventory} />
       ) : (
-        <GridView inventory={inventory} />
+        <ProductGridView inventory={inventory} />
       )}
     </div>
   );
