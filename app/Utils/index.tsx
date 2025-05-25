@@ -16,7 +16,7 @@ export const checkValidShopName = (shopName: string = "") => {
 };
 
 export const checkValidOtp = (otp: string) => {
-  if (otp.length !== 4) {
+  if (otp.length !== 6) {
     return false;
   }
   return true;
