@@ -36,6 +36,8 @@ const Otp = ({ onSubmitSuccess }: OtpProps) => {
       }
     } else {
       try {
+        const fcmToken = (window as any).AndroidInterface?.getFcmToken?.()
+        if (!fcmToken) throw new Error("Something went wrong please try again")
         const responseObj = await ApiHelper.post(
           apiEndPoints.verifyOtpAndCreateBusiness,
           {
@@ -43,6 +45,7 @@ const Otp = ({ onSubmitSuccess }: OtpProps) => {
             businessName: shopName,
             phoneNumber: mobileNumber,
             type: "KIRANA",
+            fcmToken
           }
         );
         if (responseObj.status === 200) {

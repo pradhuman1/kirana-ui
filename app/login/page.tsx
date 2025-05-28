@@ -60,9 +60,12 @@ const Login = () => {
 
     try {
       setIsLoading(true);
+      const fcmToken = (window as any).AndroidInterface?.getFcmToken?.()
+      if (!fcmToken) throw new Error("Something went wrong please try again")
       const response = await ApiHelper.post(apiEndPoints.verifyOtpAndLogin, {
         phoneNumber: mobileNumber,
         otp,
+        fcmToken
       });
 
       if (response.status === 200) {
