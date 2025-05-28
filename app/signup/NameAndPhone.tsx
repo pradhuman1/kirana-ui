@@ -1,9 +1,20 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Input from "../components/input";
 import { checkValidMobileNumber, checkValidShopName } from "../Utils";
 import ApiHelper from "../Utils/apiHelper";
 import apiEndPoints from "../Utils/apiEndPoints";
 import { useUser } from "../context/UserContext";
+
+declare global {
+  interface Window {
+    AndroidInterface?: {
+      onFormSubmit: (shopName: string, mobileNumber: string) => void;
+    };
+    showNameFromNative: (name: string) => void
+  }
+}
+
+
 
 interface NameAndPhoneProps {
   onSubmitSuccess: () => void;
@@ -16,6 +27,16 @@ const NameAndPhone = ({ onSubmitSuccess }: NameAndPhoneProps) => {
   const [shopNameErrorMessage, setShopNameErrorMessage] = useState("");
   const [shopName, setShopName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.showNameFromNative = function (name: string) {
+        alert("Received from native: " + name);
+        console.log("Received from native: " + name);
+      };
+    }
+  }, []);
 
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const shopNameInputRef = useRef<HTMLInputElement>(null);
@@ -55,6 +76,9 @@ const NameAndPhone = ({ onSubmitSuccess }: NameAndPhoneProps) => {
 
     try {
       setIsLoading(true);
+      if (window.AndroidInterface && typeof window.AndroidInterface.onFormSubmit === 'function') {
+        window.AndroidInterface.onFormSubmit(shopName, mobileNumber);
+      }
       const responseObj = await ApiHelper.post(apiEndPoints.signupNew, {
         phoneNumber: mobileNumber,
         businessName: shopName,
@@ -62,7 +86,9 @@ const NameAndPhone = ({ onSubmitSuccess }: NameAndPhoneProps) => {
 
       if (responseObj.status === 200) {
         updateUserData({ shopName, mobileNumber });
+
         onSubmitSuccess();
+
       } else {
         // Handle API error
         setMobileErrorMessage(
@@ -70,6 +96,7 @@ const NameAndPhone = ({ onSubmitSuccess }: NameAndPhoneProps) => {
         );
       }
     } catch (error) {
+      console.log(error)
       setMobileErrorMessage("Failed to submit. Please try again.");
     } finally {
       setIsLoading(false);
