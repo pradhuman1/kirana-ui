@@ -54,7 +54,7 @@ const Login = () => {
 
   const verifyOtpAndLogin = async () => {
     if (!checkValidOtp(otp)) {
-      setErrorMessage("Please enter a valid 4 digit OTP");
+      setErrorMessage("Please enter a valid 6 digit OTP");
       return;
     }
 
