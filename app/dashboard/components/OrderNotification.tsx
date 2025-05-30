@@ -4,27 +4,14 @@ import { XMarkIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 import ApiHelper from "@/app/Utils/apiHelper";
 import apiEndPoints from "@/app/Utils/apiEndPoints";
 import { handleApiError } from "@/app/Utils/apiHelper";
+import {
+  acceptOrder,
+  rejectOrder,
+  Order,
+  OrderItem,
+} from "@/app/Utils/orderUtils";
 import Table from "@/app/components/Table";
 import Button from "@/app/components/Button";
-
-interface OrderItem {
-  productID: string;
-  productTitle: string;
-  weight: string;
-  price: string;
-  brand: string;
-  imagesUrl: string[];
-  quantity: number;
-}
-
-interface Order {
-  orderId: string;
-  status: string;
-  deliveryFee: number;
-  totalAmount: number;
-  createdAt: string;
-  items: OrderItem[];
-}
 
 export default function OrderNotification() {
   const [order, setOrder] = useState<Order | null>(null);
@@ -73,11 +60,11 @@ export default function OrderNotification() {
       setIsLoading(true);
       setError(null);
       const orderResponse = await ApiHelper.get<{ ordersList: Order[] }>(
-        apiEndPoints.getSelfCustomerOrders
+        apiEndPoints.getShopOrders
       );
       const ordersList = orderResponse?.ordersList || [];
       const pendingOrder =
-        ordersList?.find((order: Order) => order.status === "placed") || null;
+        ordersList?.find((order: Order) => order.status === "pending") || null;
 
       if (pendingOrder) {
         setOrder(pendingOrder);
@@ -100,7 +87,7 @@ export default function OrderNotification() {
     pollingTimeoutRef.current = setTimeout(() => {
       fetchPendingOrder();
       startPolling(); // Schedule next poll
-    }, 30000);
+    }, 5000);
   }, [fetchPendingOrder]);
 
   const stopPolling = useCallback(() => {
@@ -113,11 +100,7 @@ export default function OrderNotification() {
   const handleAcceptOrder = async (orderId: string) => {
     try {
       setIsLoading(true);
-      await ApiHelper.post(apiEndPoints.acceptOrder(orderId));
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
+      await acceptOrder(orderId);
       setIsPlaying(false);
       setOrder(null);
     } catch (err) {
@@ -131,11 +114,7 @@ export default function OrderNotification() {
   const handleRejectOrder = async (orderId: string) => {
     try {
       setIsLoading(true);
-      await ApiHelper.post(apiEndPoints.rejectOrder(orderId));
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
+      await rejectOrder(orderId);
       setIsPlaying(false);
       setOrder(null);
     } catch (err) {
@@ -315,7 +294,9 @@ export default function OrderNotification() {
                     variant="success"
                     size="md"
                     isLoading={isLoading}
-                    onClick={() => order && handleAcceptOrder(order.orderId)}
+                    onClick={() =>
+                      order && handleAcceptOrder(order.shopOrderId)
+                    }
                     className="sm:ml-3 sm:w-auto w-full"
                   >
                     Accept Order
@@ -324,7 +305,9 @@ export default function OrderNotification() {
                     variant="secondary"
                     size="md"
                     isLoading={isLoading}
-                    onClick={() => order && handleRejectOrder(order.orderId)}
+                    onClick={() =>
+                      order && handleRejectOrder(order.shopOrderId)
+                    }
                     className="mt-3 sm:mt-0 sm:w-auto w-full"
                   >
                     Reject Order
