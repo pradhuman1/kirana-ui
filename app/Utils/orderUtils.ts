@@ -44,3 +44,19 @@ export const rejectOrder = async (orderId: string): Promise<void> => {
     throw new Error(message);
   }
 };
+
+export const fetchOrders = async (status?: string): Promise<Order[]> => {
+  try {
+    const response = await ApiHelper.get<{ ordersList: Order[] }>(
+      apiEndPoints.getShopOrders
+    );
+    const orders = response?.ordersList || [];
+    if (status) {
+      return orders.filter((order) => order.status === status);
+    }
+    return orders;
+  } catch (err) {
+    const { message } = handleApiError(err, "Failed to fetch orders");
+    throw new Error(message);
+  }
+};

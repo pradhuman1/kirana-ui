@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect, useCallback, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
 import ApiHelper from "@/app/Utils/apiHelper";
 import apiEndPoints from "@/app/Utils/apiEndPoints";
 import { handleApiError } from "@/app/Utils/apiHelper";
@@ -14,6 +15,7 @@ import Table from "@/app/components/Table";
 import Button from "@/app/components/Button";
 
 export default function OrderNotification() {
+  const router = useRouter();
   const [order, setOrder] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,6 +105,8 @@ export default function OrderNotification() {
       await acceptOrder(orderId);
       setIsPlaying(false);
       setOrder(null);
+      // Navigate to orders page after accepting
+      router.push("/dashboard/orders");
     } catch (err) {
       const { message } = handleApiError(err, "Failed to accept order");
       setError(message);
