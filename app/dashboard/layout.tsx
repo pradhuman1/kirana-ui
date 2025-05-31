@@ -112,6 +112,9 @@ export default function DashboardLayout({
                           return (
                             <li key={item.name}>
                               <Link
+                                onClick={() => {
+                                  setSidebarOpen(false);
+                                }}
                                 href={item.href}
                                 className={classNames(
                                   isActive
@@ -139,6 +142,9 @@ export default function DashboardLayout({
                                     return (
                                       <li key={subItem.name}>
                                         <Link
+                                          onClick={() => {
+                                            setSidebarOpen(false);
+                                          }}
                                           href={subItem.href}
                                           className={classNames(
                                             isSubActive
