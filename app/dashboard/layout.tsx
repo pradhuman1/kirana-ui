@@ -31,6 +31,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { navigationItems } from "../Utils/leftNav";
 import UserProfile from "./components/UserProfile";
+import OrderNotification from "./components/OrderNotification";
 
 const navigation = navigationItems;
 const teams = [
@@ -53,6 +54,7 @@ export default function DashboardLayout({
 
   return (
     <>
+      <OrderNotification />
       {/*
         This example requires updating your template:
 
@@ -110,6 +112,9 @@ export default function DashboardLayout({
                           return (
                             <li key={item.name}>
                               <Link
+                                onClick={() => {
+                                  setSidebarOpen(false);
+                                }}
                                 href={item.href}
                                 className={classNames(
                                   isActive
@@ -137,6 +142,9 @@ export default function DashboardLayout({
                                     return (
                                       <li key={subItem.name}>
                                         <Link
+                                          onClick={() => {
+                                            setSidebarOpen(false);
+                                          }}
                                           href={subItem.href}
                                           className={classNames(
                                             isSubActive

@@ -42,9 +42,9 @@ export default function Table<T>({
               {columns.map((column, index) => (
                 <td
                   key={column.header}
-                  className={`px-3 py-4 text-sm ${
+                  className={`px-0 py-4 text-sm ${
                     index === 0
-                      ? "pl-4 font-medium text-gray-900"
+                      ? "pl-1 font-medium text-gray-900"
                       : "text-gray-500"
                   }`}
                 >
