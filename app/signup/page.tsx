@@ -23,7 +23,7 @@ const Signup = () => {
       localStorage.setItem("pageStep", step);
     }
     if (step === "signupComplete") {
-      router.push("/dashboard");
+      router.push("/dashboard/products");
     }
     setPageStep(step);
   };

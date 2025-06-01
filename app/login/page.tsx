@@ -71,7 +71,7 @@ const Login = () => {
       if (response.status === 200) {
         const { businessId, token } = response.data;
         updateUserData({ businessId, token });
-        router.push("/dashboard");
+        router.push("/dashboard/products");
       }
     } catch (error) {
       const { message } = handleApiError(error, "Failed to verify OTP");

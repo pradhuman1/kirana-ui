@@ -13,7 +13,16 @@ import {
 } from "@/app/Utils/orderUtils";
 import Table from "@/app/components/Table";
 import Button from "@/app/components/Button";
+interface AndroidInterface {
+  getFcmToken(): string;
+  stopBuzzer(): void;
+}
 
+declare global {
+  interface Window {
+    AndroidInterface?: AndroidInterface;
+  }
+}
 export default function OrderNotification() {
   const router = useRouter();
   const [order, setOrder] = useState<Order | null>(null);
@@ -105,6 +114,9 @@ export default function OrderNotification() {
       await acceptOrder(orderId);
       setIsPlaying(false);
       setOrder(null);
+      if (window.AndroidInterface && window.AndroidInterface.stopBuzzer) {
+          window.AndroidInterface.stopBuzzer();
+      }
       // Navigate to orders page after accepting
       router.push("/dashboard/orders");
     } catch (err) {
@@ -121,6 +133,9 @@ export default function OrderNotification() {
       await rejectOrder(orderId);
       setIsPlaying(false);
       setOrder(null);
+      if (window.AndroidInterface && window.AndroidInterface.stopBuzzer) {
+          window.AndroidInterface.stopBuzzer();
+      }
     } catch (err) {
       const { message } = handleApiError(err, "Failed to reject order");
       setError(message);

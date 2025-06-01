@@ -15,7 +15,8 @@ export default function Products() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const addProduct = () => {
-    setIsModalOpen(true);
+    router.push("/dashboard/products/add/manualUpload");
+    // setIsModalOpen(true);
   };
 
   const handleOptionClick = (option: string, path?: string) => {
@@ -30,7 +31,7 @@ export default function Products() {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Inventory</h1>
         <button
           onClick={addProduct}
           className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
