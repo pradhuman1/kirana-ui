@@ -20,8 +20,6 @@ export default function Products() {
   };
 
   const handleOptionClick = (option: string, path?: string) => {
-    console.log(`Selected option: ${option}`);
-    console.log(`Selected path: ${path}`);
     setIsModalOpen(false);
     if (path) {
       router.push(path);

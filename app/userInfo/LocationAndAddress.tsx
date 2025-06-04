@@ -16,7 +16,6 @@ interface LocationAndAddressProps {
 const LocationAndAddress = ({ onSubmitSuccess }: LocationAndAddressProps) => {
   const { userData } = useUser();
   const { businessId } = userData;
-  console.log("businessId from userData", businessId);
 
   const [currentLocation, setUserCurrentLocation] = useState<any>(null);
   const [pincode, setPincode] = useState<string>("");
@@ -48,12 +47,10 @@ const LocationAndAddress = ({ onSubmitSuccess }: LocationAndAddressProps) => {
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
         const currentLocation = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-        console.log("current location is", currentLocation);
         setUserCurrentLocation(currentLocation);
       });
     }
@@ -86,7 +83,6 @@ const LocationAndAddress = ({ onSubmitSuccess }: LocationAndAddressProps) => {
   };
 
   const onSubmit = async () => {
-    console.log("onSubmit called");
     try {
       if (!checkValidAddress(address)) {
         setAddressErrorMessage("Please enter a valid address");
@@ -114,11 +110,9 @@ const LocationAndAddress = ({ onSubmitSuccess }: LocationAndAddressProps) => {
           },
         },
       });
-      console.log(responseObj);
       setIsLoading(false);
       onSubmitSuccess();
     } catch (error) {
-      console.log(error);
       setIsLoading(false);
     }
   };

@@ -32,7 +32,6 @@ function MapRender({ currentLocation, onUpdateLocation }: MapRenderProps) {
   }, []);
 
   const onDragEnd = (event: any) => {
-    console.log(event);
     onUpdateLocation(event);
   };
   return isLoaded ? (

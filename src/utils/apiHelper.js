@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'https://kirana-shop.onrender.com/api',
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'https://api.passdukan.com/api',
   headers: {
     'Content-Type': 'application/json',
   },

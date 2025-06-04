@@ -26,19 +26,16 @@ const GeoLocation = ({ onSubmitSuccess }: GeoLocationProps) => {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
         const currentLocation = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-        console.log("current location is", currentLocation);
         setUserCurrentLocation(currentLocation);
       });
     }
   }, []);
 
   const onUpdateLocation = (event: any) => {
-    console.log(event);
     const newLat = event.latLng.lat();
     const newLng = event.latLng.lng();
     setUserCurrentLocation({ lat: newLat, lng: newLng });
@@ -47,12 +44,10 @@ const GeoLocation = ({ onSubmitSuccess }: GeoLocationProps) => {
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
         const currentLocation = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         };
-        console.log("current location is", currentLocation);
         setUserCurrentLocation(currentLocation);
       });
     }

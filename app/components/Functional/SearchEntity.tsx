@@ -89,7 +89,6 @@ export default function SearchEntity({
       } catch (error: unknown) {
         // Don't update state if the request was aborted
         if (error instanceof Error && error.name === "AbortError") {
-          console.log("Request was aborted");
           return;
         }
         console.error("Error searching products:", error);

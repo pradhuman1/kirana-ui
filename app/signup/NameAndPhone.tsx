@@ -38,11 +38,6 @@ const NameAndPhone = ({ onSubmitSuccess }: NameAndPhoneProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("handleSubmit");
-    console.log(mobileNumber);
-    console.log(shopName);
-    console.log(mobileErrorMessage);
-    console.log(shopNameErrorMessage);
     // Validate inputs
     if (!checkValidMobileNumber(mobileNumber)) {
       setMobileErrorMessage("Please enter a valid 10 digit mobile number");
@@ -72,7 +67,6 @@ const NameAndPhone = ({ onSubmitSuccess }: NameAndPhoneProps) => {
     } catch (error) {
       const err = error as { message?: string };
       if (err?.message) {
-        console.log("error in catch", err);
         setMobileErrorMessage(err.message);
       } else {
         setMobileErrorMessage("Failed to submit. Please try again.");

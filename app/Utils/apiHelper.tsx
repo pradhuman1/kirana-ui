@@ -53,7 +53,7 @@ interface ApiHelperType {
 }
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://kirana-shop.onrender.com/api",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.passdukan.com/api",
   headers: {
     "Content-Type": "application/json",
   },

@@ -5,13 +5,13 @@ import { logoutUser } from "@/app/Utils/apiHelper";
 
 export default function UserProfile() {
   const { userData } = useUser();
-  console.log(userData);
-  console.log("userData");
+  // console.log(userData);
+  // console.log("userData");
 
   const getUserDisplayName = () => {
     if (userData.shopName) {
-      console.log("shopName");
-      console.log(userData.shopName);
+      // console.log("shopName");
+      // console.log(userData.shopName);
       return userData.shopName;
     }
     if (userData.mobileNumber) {

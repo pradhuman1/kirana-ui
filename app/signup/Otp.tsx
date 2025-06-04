@@ -12,7 +12,6 @@ interface OtpProps {
 const Otp = ({ onSubmitSuccess }: OtpProps) => {
   const { userData, updateUserData } = useUser();
   const { shopName, mobileNumber } = userData;
-  console.log("userData", userData);
   const [otp, setOtp] = useState("");
   const [otpErrorMessage, setOtpErrorMessage] = useState("");
 
@@ -26,8 +25,6 @@ const Otp = ({ onSubmitSuccess }: OtpProps) => {
 
   const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log("onSubmit called");
-    console.log(otp);
     if (!checkValidOtp(otp)) {
       setOtpErrorMessage("Please enter a valid OTP");
       const inputElement = otpInputRef.current;
