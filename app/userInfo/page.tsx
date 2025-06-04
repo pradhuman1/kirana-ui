@@ -1,9 +1,7 @@
 "use client";
 import { useState } from "react";
-import NameAndPhone from "./NameAndPhone";
-import Otp from "./Otp";
-import LocationAndAddress from "../userInfo/LocationAndAddress";
-import GeoLocation from "../userInfo/GeoLocation";
+import LocationAndAddress from "./LocationAndAddress";
+import GeoLocation from "./GeoLocation";
 import { useRouter } from "next/navigation";
 import RedirectionInfo from "../components/Functional/RedirectionInfo";
 
@@ -22,19 +20,25 @@ const Signup = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("pageStep", step);
     }
-    if (step === "locationAndAddress") {
-      router.push("/userInfo");
+    if (step === "signupComplete") {
+      router.push("/dashboard/products");
     }
     setPageStep(step);
   };
 
   const renderView = () => {
     switch (pageStep) {
-      case "nameAndPhone":
-        return <NameAndPhone onSubmitSuccess={() => updatePageStep("otp")} />;
-      case "otp":
+      case "locationAndAddress":
         return (
-          <Otp onSubmitSuccess={() => updatePageStep("locationAndAddress")} />
+          <LocationAndAddress
+            onSubmitSuccess={() => updatePageStep("geoLocation")}
+          />
+        );
+      case "geoLocation":
+        return (
+          <GeoLocation
+            onSubmitSuccess={() => updatePageStep("signupComplete")}
+          />
         );
       default:
         return null;

@@ -51,7 +51,7 @@ interface FormVariant {
 
 export default function ManualUpload() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [productStock, setProductStock] = useState<number>(0);
+  const [productStock, setProductStock] = useState<number>(1);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -178,7 +178,7 @@ export default function ManualUpload() {
 
         // Reset form after successful submission
         setSelectedProduct(null);
-        setProductStock(0);
+        setProductStock(1);
         setFormData({
           name: "",
           description: "",
@@ -395,7 +395,6 @@ export default function ManualUpload() {
                   value={productStock.toString()}
                   onChange={(e) => setProductStock(Number(e.target.value))}
                   required={true}
-                  infoMessage="If you don't know the stock, leave it blank"
                   isDisabled={false}
                 />
               </div>
