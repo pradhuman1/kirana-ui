@@ -31,7 +31,7 @@ const Signup = () => {
       case "locationAndAddress":
         return (
           <LocationAndAddress
-            onSubmitSuccess={() => updatePageStep("geoLocation")}
+            onSubmitSuccess={() => updatePageStep("signupComplete")}
           />
         );
       case "geoLocation":
